@@ -2,7 +2,7 @@ covid
 emoji
 fonttools
 gtts
-gingerit
+# gingerit
 jikanpy
 git+https://github.com/New-dev0/AsyncLyricsExtractor.git
 git+https://github.com/ufoptg/drawHub.git
