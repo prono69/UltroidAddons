@@ -19,10 +19,11 @@ except ImportError:
 
 from telethon.tl.types import InputWebDocument as wb
 
-from . import LOGS, callback, in_pattern, udB, async_searcher
+from . import LOGS, async_searcher, callback, in_pattern, udB
 
 # Define your OMDB API key
-OMDB_API_KEY = udB.get_key("OMDb_API")  #OpenMovies Database get free key from http://www.omdbapi.com/ with 1000 dailiy uses
+# OpenMovies Database get free key from http://www.omdbapi.com/ with 1000 dailiy uses
+OMDB_API_KEY = udB.get_key("OMDb_API")
 imdbp = "https://graph.org/file/3b45a9ed4868167954300.jpg"
 
 LIST = {}
@@ -194,7 +195,7 @@ async def inline_imdb_command(event):
                             query="imdb ",
                             same_peer=True,
                         ),
-                            Button.switch_inline(
+                        Button.switch_inline(
                             "Sᴇᴀʀᴄʜ Bʏ Yᴇᴀʀ",
                             query=f"imdb {movie_name} y= ",
                             same_peer=True,

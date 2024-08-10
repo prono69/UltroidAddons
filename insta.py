@@ -4,10 +4,12 @@ Get instagram videos by bot conv
 Command : `{i}insta <input or reply link>`
 """
 
-from . import ultroid_cmd
 import asyncio
+
 from telethon.errors.rpcerrorlist import YouBlockedUserError
 from telethon.tl.functions.contacts import UnblockRequest as unblock
+
+from . import ultroid_cmd
 
 
 async def delete_conv(event, chat, from_message):
@@ -17,6 +19,7 @@ async def delete_conv(event, chat, from_message):
         msgs.append(i.id)
     await event.client.delete_messages(chat, msgs)
     await event.client.send_read_acknowledge(chat)
+
 
 @ultroid_cmd(pattern="insta ?(.*)")
 async def insta_dl(event):
@@ -92,6 +95,7 @@ async def insta_dl(event):
                 await event.client.send_file(event.chat_id, media)
             else:
                 await eod(
-                    event, f"**#ERROR\nv1 :** __Not valid URL__\n\n**v2 :**__ {media.text}__"
+                    event,
+                    f"**#ERROR\nv1 :** __Not valid URL__\n\n**v2 :**__ {media.text}__",
                 )
             await delete_conv(event, v2, v2_flag)
