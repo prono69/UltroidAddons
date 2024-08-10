@@ -7,7 +7,7 @@
 
 import re
 from telethon.tl.types import InputWebDocument as wb
-from . import get_string, async_searcher, in_pattern, InlinePlugin, async_searcher
+from . import get_string, in_pattern, InlinePlugin, async_searcher
 from telethon.tl.custom import Button
 
 @in_pattern("winget", owner=True)
