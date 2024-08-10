@@ -92,7 +92,7 @@ async def make_logog(ult):
     if not match and (reply and reply.text):
         match = reply.text
     else:
-        return await msg.edit(f"`Provide a name to make logo...`")
+        return await msg.edit("`Provide a name to make logo...`")
     first, last = "", ""
     if len(match.split()) >= 2:
         first, last = match.split()[:2]

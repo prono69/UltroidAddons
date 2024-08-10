@@ -187,7 +187,7 @@ async def inline_imdb_command(event):
             [
                 await event.builder.article(
                     title="Nᴏ ʀᴇsᴜʟᴛs ғᴏᴜɴᴅ",
-                    text=f"**IMDʙ**\nTʀʏ ᴀɴᴏᴛʜᴇʀ sᴇᴀʀᴄʜ",
+                    text="**IMDʙ**\nTʀʏ ᴀɴᴏᴛʜᴇʀ sᴇᴀʀᴄʜ",
                     thumb=wb(imdbp, 0, "image/jpeg", []),
                     buttons=[
                         Button.switch_inline(

@@ -78,7 +78,7 @@ async def inline_pypi_handler(event):
                     title="sᴇᴀʀᴄʜ ᴘʏᴘɪ",
                     thumb=wb(pypimg, 0, "image/jpeg", []),
                     content=wb(pypimg, 0, "image/jpeg", []),
-                    text=f"**ᴘʏᴘɪ sᴇᴀʀᴄʜ**\n\nʏᴏᴜ ᴅɪᴅɴ'ᴛ sᴇᴀʀᴄʜ ғᴏʀ ᴀɴʏᴛʜɪɴɢ.",
+                    text="**ᴘʏᴘɪ sᴇᴀʀᴄʜ**\n\nʏᴏᴜ ᴅɪᴅɴ'ᴛ sᴇᴀʀᴄʜ ғᴏʀ ᴀɴʏᴛʜɪɴɢ.",
                     buttons=[
                         Button.switch_inline(
                             "sᴇᴀʀᴄʜ ᴀɢᴀɪɴ",
