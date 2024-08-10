@@ -5,13 +5,14 @@
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
 
-
+from bs4 import BeautifulSoup as bs
 from telethon.tl.custom import Button
 from telethon.tl.types import InputWebDocument as wb
-from .. import async_searcher, in_pattern, InlinePlugin
-from bs4 import BeautifulSoup as bs
+
+from .. import InlinePlugin, async_searcher, in_pattern
 
 _OMG = {}
+
 
 @in_pattern("omgu", owner=True)
 async def omgubuntu(ult):

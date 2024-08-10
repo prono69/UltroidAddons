@@ -1,14 +1,13 @@
 # Ultroid - UserBot
 #
 # This file is a part of < https://github.com/TeamUltroid/UltroidAddons/>
-
 """
 Fetch Random anime quotes
 
 Command : `{i}aniq`
 """
 
-from . import ultroid_cmd, async_searcher, udB
+from . import async_searcher, udB, ultroid_cmd
 
 
 @ultroid_cmd(pattern="aniq")
@@ -16,10 +15,10 @@ async def _(ult):
     u = await ult.eor("...")
     getkey = udB.get_key("ANIQUOTE_TOKEN")
     if not getkey:
-    	await eod(ult, "set ANIQUOTE_TOKEN first")
-    	return
+        await eod(ult, "set ANIQUOTE_TOKEN first")
+        return
     try:
-        headers={
+        headers = {
             "Authorization": f"{getkey}",
         }
         resp = await async_searcher(

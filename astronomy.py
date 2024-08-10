@@ -3,7 +3,6 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 """
 ✘ Commands Available -
 
@@ -13,7 +12,7 @@
 
 from bs4 import BeautifulSoup as bs
 
-from . import ultroid_cmd, async_searcher
+from . import async_searcher, ultroid_cmd
 
 
 @ultroid_cmd(pattern="apod$")

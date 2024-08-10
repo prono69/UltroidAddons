@@ -4,11 +4,10 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 """
 Fasly Bot Cheat.
 
-• `{i}fastly` - On/Off command. 
+• `{i}fastly` - On/Off command.
 
 • Also Required : `OCR_API`. Add it using the command `.setdb OCR_API api_key`
 • To get the API visit 'https://ocr.space/ocrapi'
@@ -17,10 +16,12 @@ The bot will try to auto reply first to the messages by @FastlyWriteBot
 • Add User id of fastly clone to `FASTLY_CLONES` to allow this plugin work with them.
 """
 
+from os import remove
+
 from telegraph import upload_file
 from telethon import events
-from . import udB, LOGS, ultroid_bot, ultroid_cmd, async_searcher
-from os import remove
+
+from . import LOGS, async_searcher, udB, ultroid_bot, ultroid_cmd
 
 base_url = "https://api.ocr.space/parse/imageurl?apikey={api}&url={tgraph}"
 

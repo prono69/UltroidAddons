@@ -2,7 +2,6 @@
 # 2020 Copyright (c)
 
 # Animation Plugin
-
 """
   Animation Plugin
 

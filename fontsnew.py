@@ -3,7 +3,6 @@
 #
 # Ported for Ultroid < https://github.com/TeamUltroid/Ultroid >
 #
-
 """
 ✘ Commands Available -
 
@@ -37,7 +36,6 @@
 • `{i}rusify <text>`
     turns text to яц$їfч font
 """
-
 
 normiefont = [
     "a",
@@ -468,7 +466,6 @@ async def greektext(ult):
 
 @ultroid_cmd(pattern="sorcify ?(.*)")
 async def sorcerertext(ult):
-
     args = ult.pattern_match.group(1)
     if not args and ult.is_reply:
         get = await ult.get_reply_message()

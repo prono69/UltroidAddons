@@ -5,15 +5,12 @@
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
 #
-
-
 """
 ✘ Commands Available -
 
 • `{i}ocr <language code><reply to a photo>`
     text recognition service.
 """
-
 
 from telegraph import upload_file as uf
 

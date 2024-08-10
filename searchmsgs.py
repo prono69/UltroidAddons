@@ -1,8 +1,6 @@
 # " Made by @e3ris for Ultroid. "
 # < https://github.com/TeamUltroid/Ultroid >
 # idea: https://t.me/TelethonChat/256160
-
-
 """
 ✘ To Search Messages in chat easily :)
 

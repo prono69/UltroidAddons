@@ -6,8 +6,6 @@
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
 #
 # tts- Ported from Telebot
-
-
 """
 ✘ Commands Available -
 

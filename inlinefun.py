@@ -7,7 +7,6 @@
 # .tweet made for ultroid
 
 # .uta ported from Dark-Cobra
-
 """
 ✘ Commands Available -
 
@@ -34,7 +33,7 @@ from random import choice
 
 from addons.waifu import deEmojify
 
-from . import ultroid_cmd, get_string
+from . import get_string, ultroid_cmd
 
 
 @ultroid_cmd(pattern="tweet ?(.*)")

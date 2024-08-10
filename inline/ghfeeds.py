@@ -5,10 +5,10 @@
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
 
-
 from telethon.tl.custom import Button
-from . import in_pattern, InlinePlugin, async_searcher
 from telethon.tl.types import InputWebDocument
+
+from . import InlinePlugin, async_searcher, in_pattern
 
 
 @in_pattern("gh", owner=True)
@@ -101,5 +101,6 @@ async def gh_feeds(ult):
             res.append(article)
     msg = f"Showing {len(res)} feeds!" if res else "Nothing Found"
     await ult.answer(res, cache_time=5000, switch_pm=msg, switch_pm_param="start")
+
 
 InlinePlugin.update({"GɪᴛHᴜʙ ғᴇᴇᴅs": "gh"})

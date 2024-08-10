@@ -1,7 +1,6 @@
 # " Made by @e3ris for Ultroid "
 # < https://github.com/TeamUltroid/Ultroid >
 # This Plugin uses @Text2gifBot.
-
 """
 ✘ **Makes Fancy Gif from your Words!**
 

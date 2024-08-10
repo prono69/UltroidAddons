@@ -1,6 +1,5 @@
 # Ultroid Userbot
 # Made by senku
-
 """
 ✘ Commands Available
 
@@ -38,4 +37,5 @@ async def _(event):
             return
     namem = f"**Song Name : **{result.text.splitlines()[0]}\
         \n\n**Details : **__{result.text.splitlines()[2]}__"
+
     await snku.edit(namem)

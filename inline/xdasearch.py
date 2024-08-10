@@ -6,11 +6,14 @@
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>
 
 import re
+
 from bs4 import BeautifulSoup as bs
 from telethon.tl.types import InputWebDocument as wb
-from .. import get_string, async_searcher, in_pattern, InlinePlugin
+
+from .. import InlinePlugin, async_searcher, get_string, in_pattern
 
 # Inspired by @FindXDaBot
+
 
 @in_pattern("xda", owner=True)
 async def xda_dev(event):
@@ -18,9 +21,7 @@ async def xda_dev(event):
     try:
         query = QUERY[1]
     except IndexError:
-        await event.answer(
-            [], switch_pm=get_string("instu_3"), switch_pm_param="start"
-        )
+        await event.answer([], switch_pm=get_string("instu_3"), switch_pm_param="start")
         return
     le = "https://www.xda-developers.com/search/" + query.replace(" ", "+")
     ct = await async_searcher(le, re_content=True)

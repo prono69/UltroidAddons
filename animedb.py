@@ -1,6 +1,5 @@
 # Made by : @Arnab431 || github.com/ArnabXD
 # Made For : https://github.com/TeamUltroid/UltroidAddons
-
 """
 Search animes and manga from anilist.co using @animedb_bot
 
@@ -9,7 +8,6 @@ Search animes and manga from anilist.co using @animedb_bot
 • `{i}manga <keyword>`
     To get manga info
 """
-
 
 from . import *
 
