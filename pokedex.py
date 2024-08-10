@@ -5,22 +5,21 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
- 
 """
 ✘ Commands Available -
- 
+
 • `{i}pokemon <query>`
     Send details of Pokemon.
- 
+
 • `{i}pokecard <query>`
     Send Card of Pokemon.
 """
- 
+
 from pokedex import pokedex as badhiya
- 
-from . import ultroid_cmd, async_searcher
- 
- 
+
+from . import async_searcher, ultroid_cmd
+
+
 @ultroid_cmd(pattern="pokemon ?(.*)")
 async def pokedex(event):
     pokemon = event.pattern_match.group(1).lower()
@@ -120,8 +119,8 @@ async def pokedex(event):
   """
     await event.client.send_file(event.chat_id, lst, caption=cap)
     await xx.delete()
- 
- 
+
+
 @ultroid_cmd(pattern="pokecard ?(.*)")
 async def pokecard(event):
     pokename = event.pattern_match.group(1).lower()
