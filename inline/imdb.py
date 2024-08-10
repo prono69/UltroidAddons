@@ -181,7 +181,7 @@ async def inline_imdb_command(event):
             noresult = movie_name.replace("y=", "")
         else:
             noresult = movie_name
-        
+
         return await event.answer(
             [
                 await event.builder.article(
