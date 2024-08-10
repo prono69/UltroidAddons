@@ -1,6 +1,5 @@
 # Ultroid Userbot
 # <https://github.com/TeamUltroid/UltroidAddons/tree/main/imdb.py>
-
 """
 Search movie details from IMDB
 

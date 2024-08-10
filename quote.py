@@ -4,14 +4,12 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 """
 ✘ Commands Available -
 
 • `{i}qbot <reply>`
     Make sticker quote without QuotlyBot
 """
-
 
 import json
 import os
@@ -22,13 +20,13 @@ import urllib
 import emoji
 from fontTools.ttLib import TTFont
 from PIL import Image, ImageDraw, ImageFont, ImageOps
-from telethon.tl import functions, types
 from telethon.errors.rpcerrorlist import UserNotParticipantError
+from telethon.tl import functions, types
+
 from . import *
 
 # Oringinal Source from Nicegrill: https://github.com/erenmetesar/NiceGrill/
 # Ported to Ultroid
-
 
 COLORS = [
     "#F07975",

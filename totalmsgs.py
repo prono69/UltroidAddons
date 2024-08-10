@@ -1,5 +1,4 @@
 # credit https://t.me/I_m_FlaSh
-
 """
 ✘ Commands Available -
 • `{i}totalmsgs`

@@ -4,7 +4,6 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 """
 ✘ Commands Available
 
@@ -30,15 +29,16 @@
     Shows the desired place in the map.
 """
 
-import random, os
+import os
+import random
 
 import requests
 from bs4 import BeautifulSoup as bs
+from phlogo import generate
 from pyjokes import get_joke
 from telethon.errors import ChatSendMediaForbiddenError
-from phlogo import generate
 
-from . import ultroid_cmd, get_string, HNDLR, async_searcher
+from . import HNDLR, async_searcher, get_string, ultroid_cmd
 
 
 @ultroid_cmd(pattern="joke$")
@@ -108,7 +108,8 @@ async def make_logog(ult):
     await msg.delete()
 
 
-Bot = {"gps":"openmap_bot", "wordi":"wordibot"}
+Bot = {"gps": "openmap_bot", "wordi": "wordibot"}
+
 
 @ultroid_cmd(pattern="(gps|wordi) (.*)")
 async def _map(ult):

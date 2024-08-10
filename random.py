@@ -4,7 +4,6 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-
 """
 ✘ Commands Available -
 
@@ -32,12 +31,12 @@ API_LIST = {
     "dog": "https://random.dog/woof.json",
     "duck": "https://random-d.uk/api/random",
     "fox": "https://randomfox.ca/floof/",
-#   "funfact": "https://asli-fun-fact-api.herokuapp.com/",
+    #   "funfact": "https://asli-fun-fact-api.herokuapp.com/",
     "quote": "https://api.themotivate365.com/stoic-quote",
     "quotable": "http://api.quotable.io/random",
     "word": "https://random-words-api.vercel.app/word",
-#   "words": "https://random-word-api.herokuapp.com/word?number=10",
-#   "food": "https://foodish-api.herokuapp.com/api/",
+    #   "words": "https://random-word-api.herokuapp.com/word?number=10",
+    #   "food": "https://foodish-api.herokuapp.com/api/",
     "car": "https://forza-api.tk/",
 }
 

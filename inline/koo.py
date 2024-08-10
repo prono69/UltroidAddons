@@ -1,4 +1,3 @@
-
 # Ultroid - UserBot
 # Copyright (C) 2021-2022 TeamUltroid
 #
@@ -6,9 +5,10 @@
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
 
-from telethon.tl.types import InputWebDocument as wb
 from telethon.tl.custom import Button
-from . import in_pattern, InlinePlugin, async_searcher
+from telethon.tl.types import InputWebDocument as wb
+
+from . import InlinePlugin, async_searcher, in_pattern
 
 _koo_ = {}
 
