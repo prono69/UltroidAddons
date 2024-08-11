@@ -5,15 +5,8 @@
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
 import hashlib
-import inspect
 import os
 import re
-from datetime import datetime
-from html import unescape
-from random import choice
-from re import compile as re_compile
-
-from bs4 import BeautifulSoup as bs
 
 from . import *
 
@@ -24,8 +17,6 @@ except ImportError:
     from markdownify import markdownify as md
 
 from telethon import Button
-from telethon.tl.alltlobjects import LAYER, tlobjects
-from telethon.tl.types import DocumentAttributeAudio as Audio
 from telethon.tl.types import InputWebDocument as wb
 from telethon.tl.types import MessageEntityTextUrl
 
