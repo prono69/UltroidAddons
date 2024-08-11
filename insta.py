@@ -7,7 +7,6 @@ Command : `{i}insta <input or reply link>`
 import asyncio
 
 from telethon.errors.rpcerrorlist import YouBlockedUserError
-from telethon.tl.functions.contacts import UnblockRequest as unblock
 
 from . import ultroid_cmd
 

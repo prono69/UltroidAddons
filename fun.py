@@ -33,7 +33,6 @@ import os
 import random
 
 import requests
-from bs4 import BeautifulSoup as bs
 from phlogo import generate
 from pyjokes import get_joke
 from telethon.errors import ChatSendMediaForbiddenError
