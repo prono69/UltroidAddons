@@ -48,10 +48,7 @@ async def get_movie_data(search_term, full_plot=False):
             movie_name = parts[0].strip()
             if movie_name:
                 year = parts[1].strip() if len(parts) > 1 else None
-                if year:
-                    SBY = True
-                else:
-                    SBY = False
+                SBY = bool(year)
             else:
                 SBY = False
                 movie_name = search_term
