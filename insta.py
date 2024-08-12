@@ -20,7 +20,7 @@ async def delete_conv(event, chat, from_message):
     await event.client.send_read_acknowledge(chat)
 
 
-@ultroid_cmd(pattern="insta ?(.*)")
+@ultroid_cmd(pattern="idl ?(.*)")
 async def insta_dl(event):
     "For downloading instagram media"
     link = event.pattern_match.group(1)
