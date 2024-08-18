@@ -1,6 +1,5 @@
 # Written by dot arc (@moiusrname)
 # Bing Scrapper Source: https://github.com/gurugaurav/bing_image_downloader
-
 """
 ✘ **Get Image from Bing !!**
 • `{i}bing Monsoon`
@@ -17,10 +16,10 @@
 
 import asyncio
 import imghdr
+import re
 from functools import partial
 from pathlib import Path
 from random import choice, shuffle
-import re
 from secrets import token_hex
 from shutil import rmtree
 from urllib.parse import quote_plus, unquote, unquote_plus, urlsplit
@@ -40,6 +39,7 @@ from . import (
 
 
 class BingScrapper:
+
     def __init__(self, query, limit, hide_nsfw=True, filter=None):
         assert bool(query), "No query provided.."
         assert type(limit) == int, "limit must be of type Integer"
