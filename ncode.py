@@ -11,6 +11,7 @@
    Use - Paste the contents of file and send as pic.
 """
 
+import os
 import pygments
 from pygments.formatters import ImageFormatter
 from pygments.lexers import Python3Lexer
