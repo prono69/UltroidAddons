@@ -15,8 +15,6 @@ from . import ultroid_cmd, HNDLR
 import aiohttp
 import random
 
-session = aiohttp.ClientSession()
-
 NSFW = ["lick", "kiss", "butts", "andro", "gyno", "lesbian", "straight"]
 replacement_map = {
     "andro": "andromorph",
@@ -31,6 +29,7 @@ async def furry(event):
     if match not in NSFW:
         return await eod(event, f"**Please choose a correct category**\nType: `{HNDLR}help furry`")
     # Apply the replacement after confirming it's in NSFW
+    session = aiohttp.ClientSession()
     match = replacement_map.get(match, match)
     reply_to = event.reply_to_msg_id
     base = "https://v2.yiff.rest/furry"
