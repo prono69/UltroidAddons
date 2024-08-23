@@ -13,17 +13,17 @@ Developed by @TrueSaiyan
 
 import asyncio
 import json
+import logging
 import os
 import random
 import shutil
+from os import remove, system
 
 import aiofiles
-
-from . import LOGS, async_searcher, eor, ultroid_cmd, set_attributes
-from os import remove, system
-import logging
 from pyUltroid.fns.tools import metadata
 from telethon.tl.types import DocumentAttributeFilename, DocumentAttributeVideo
+
+from . import LOGS, async_searcher, eor, set_attributes, ultroid_cmd
 
 try:
     from RyuzakiLib import PornoHub
@@ -47,8 +47,6 @@ statements = [
     "Simmer down, I'm scouring and assembling your sultry video content.",
     "Easy there, I'm on the job, getting your provocative video ready.",
 ]
-
-
 
 
 async def get_video_urls():
@@ -180,9 +178,7 @@ async def corn(event):
         random_statement = random.choice(statements)
         xx = await eor(event, f"{random_statement} 😈")
         output_file, ts_files = await download_videos()
-        await xx.eor(
-            "Video downloaded, now uploading... 😈"
-        )
+        await xx.eor("Video downloaded, now uploading... 😈")
 
         file_size = os.path.getsize(output_file) / (1024 * 1024)
 
@@ -264,16 +260,20 @@ async def phub_search(e):
         attributes = [
             DocumentAttributeFilename(file_path),
             DocumentAttributeVideo(
-            duration=video_duration_in_seconds,
-            w=thumbnail_size[0],
-            h=thumbnail_size[1],
-            supports_streaming=True,
+                duration=video_duration_in_seconds,
+                w=thumbnail_size[0],
+                h=thumbnail_size[1],
+                supports_streaming=True,
             ),
-       ]
-  
-    file, _ = await e.client.fast_uploader(file_path, show_progress=True, event=moi, to_delete=True)
-    thumbnail, _ = await e.client.fast_uploader(thumb, show_progress=True, event=moi, to_delete=True)
-  
+        ]
+
+    file, _ = await e.client.fast_uploader(
+        file_path, show_progress=True, event=moi, to_delete=True
+    )
+    thumbnail, _ = await e.client.fast_uploader(
+        thumb, show_progress=True, event=moi, to_delete=True
+    )
+
     try:
         await e.client.send_file(
             e.chat_id,
@@ -281,7 +281,7 @@ async def phub_search(e):
             thumb=thumbnail,
             caption=f"**Query:** `{query}`\n**Output:**\n{output_message}",
             reply_to=e.reply_to_msg_id,
-      attributes=attributes,
+            attributes=attributes,
             supports_streaming=True,
         )
     except Exception as send_exc:
