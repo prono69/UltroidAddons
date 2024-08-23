@@ -33,7 +33,7 @@ import re
 from random import choice
 from . import get_string, ultroid_cmd
 
- 
+
 EMOJI_PATTERN = re.compile(
     "["
     "\U0001F1E0-\U0001F1FF"  # flags (iOS)
@@ -49,7 +49,7 @@ EMOJI_PATTERN = re.compile(
     "\U00002702-\U000027B0"  # Dingbats
     "]+",
 )
- 
+
 
 def deEmojify(inputString: str) -> str:
     """Remove emojis and other non-safe characters from string"""
