@@ -25,11 +25,7 @@ import logging
 from pyUltroid.fns.tools import metadata
 from telethon.tl.types import DocumentAttributeFilename, DocumentAttributeVideo
 
-try:
-    from RyuzakiLib import PornoHub
-except ImportError:
-    system("pip install -q RyuzakiLib")
-    from RyuzakiLib import PornoHub
+from RyuzakiLib import PornoHub
 
 LOGS = logging.getLogger(__name__)
 

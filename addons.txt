@@ -6,6 +6,7 @@ gtts
 jikanpy
 git+https://github.com/New-dev0/AsyncLyricsExtractor.git
 git+https://github.com/ufoptg/drawHub.git
+git+https://github.com/TeamKillerX/RyuzakiLib.git
 pokedex.py
 pyfiglet
 pygments
