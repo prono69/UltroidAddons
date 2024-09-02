@@ -45,8 +45,6 @@ statements = [
 ]
 
 
-
-
 async def get_video_urls():
     url = "https://api.fikfap.com/cached-high-quality/posts"
     params = {"amount": 1}
