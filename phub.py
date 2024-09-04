@@ -237,19 +237,20 @@ async def phub_search(e):
             return await e.eor("Please provide a query to search on PornHub.")
 
     moi = await e.eor("Searching for the video...")
-
     api = PornoHub()
-
     try:
         # Download video based on the query
-        file_path, thumb = await api.x_download(query=query)
-        output_message = f"Downloaded File: {file_path}\nThumbnail: {thumb}"
+        if query.startswith("https://xnxx.com/"):
+        	file_path, thumb, title = await api.x_download(url=query, is_stream=True)
+        else:
+        	file_path, thumb, title = await api.x_download(query=query)
+        output_message = f"**✘ Query:** `{query}`\n**✘ Title:** __{title}__"
     except Exception as exc:
         LOGS.warning(exc, exc_info=True)
         return await moi.edit(f"Error: \n> {exc}")
 
     meta = await metadata(file_path)
-    await moi.edit("Download completed. Uploading video...")
+    await moi.edit("**⬆️ 𝖴𝗉𝗅𝗈𝖺𝖽𝗂𝗇𝗀 video ...**")
     if meta is not None:
         video_duration_in_seconds = meta.get("duration", "")
         thumbnail_size = (meta.get("width", ""), meta.get("height", ""))
@@ -273,7 +274,7 @@ async def phub_search(e):
             e.chat_id,
             file,
             thumb=thumbnail,
-            caption=f"**Query:** `{query}`\n**Output:**\n{output_message}",
+            caption=f"{output_message}",
             reply_to=e.reply_to_msg_id,
       attributes=attributes,
             supports_streaming=True,
@@ -283,8 +284,6 @@ async def phub_search(e):
         await moi.edit(f"Error sending the file: \n> {send_exc}")
     finally:
         await moi.delete()
-        if thumb:
-            remove(thumb)
     try:
         await moi.delete()
     except Exception as er:
