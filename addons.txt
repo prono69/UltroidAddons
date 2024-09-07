@@ -10,6 +10,8 @@ git+https://github.com/payel-otaku/RyuzakiLib.git
 pokedex.py
 pyfiglet
 pygments
+requests_html
+lxml[html_clean]
 pyjokes
 quotefancy
 shazamio
