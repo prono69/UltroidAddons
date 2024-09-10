@@ -5,14 +5,17 @@
     __Send a random image from Danbooru.__
 """
 
-from . import ultroid_cmd
-from aiohttp import ClientSession
 from io import BytesIO
+
+from aiohttp import ClientSession
+
+from . import ultroid_cmd
 
 session = ClientSession()
 
 
 class Post:
+
     def __init__(self, source: dict, session: ClientSession):
         self._json = source
         self.session = session
@@ -22,13 +25,15 @@ class Post:
         return (
             self.file_url
             if self.file_url
-            else self.large_file_url
-            if self.large_file_url
-            else self.source
-            if self.source and "pximg" not in self.source
-            else await self.pximg
-            if self.source
-            else None
+            else (
+                self.large_file_url
+                if self.large_file_url
+                else (
+                    self.source
+                    if self.source and "pximg" not in self.source
+                    else await self.pximg if self.source else None
+                )
+            )
         )
 
     @property
@@ -57,7 +62,7 @@ async def anime_handler(message):
             message.chat_id,
             file=img,
             caption=f'<b>{ra.tag_string_general if ra.tag_string_general else "Untitled"}</b>',
-            parse_mode="html"
+            parse_mode="html",
         )
         return await message.delete()
     except Exception as e:
