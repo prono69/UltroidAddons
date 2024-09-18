@@ -1,44 +1,130 @@
-# Ultroid - UserBot
-# Copyright (C) 2021-2022 TeamUltroid
-#
-# This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
-# PLease read the GNU Affero General Public License in
-# <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
-"""
-✘ Commands Available -
+import os
 
-• `{i}character <character name>`
-   Fetch anime character details.
-"""
-
-import jikanpy
-
-from . import *
+from . import ultroid_cmd
+from pyUltroid.fns.anilist import (
+    get_airing_info,
+    get_anilist_user_info,
+    get_anime_info,
+    get_character_info,
+    get_filler_info,
+    get_manga_info,
+    get_watch_order,
+)
 
 
-@ultroid_cmd(pattern="character ?(.*)")
-async def anime_char_search(event):
-    xx = await event.eor(get_string("com_1"))
-    char_name = event.pattern_match.group(1)
-    if not char_name:
-        await eod(xx, "`Enter the name of a character too please!`", time=5)
-    jikan = jikanpy.jikan.Jikan()
+@ultroid_cmd(pattern="anime ?(.*)$")
+async def anime(message):
+    query = message.pattern_match.group(1)
+    if not query:
+    	return await eod(message, "Give search query")
+    hell = await message.eor("Searching ...")
+    caption, photo = await get_anime_info(query)
+
     try:
-        s = jikan.search("character", char_name)
-    except jikanpy.exceptions.APIException:
-        return await eod(xx, "`Couldn't find character!`", time=5)
-    a = s["results"][0]["mal_id"]
-    char_json = jikan.character(a)
-    pic = char_json["image_url"]
-    msg = f"**[{char_json['name']}]({char_json['url']})**"
-    if char_json["name_kanji"] != "Japanese":
-        msg += f" [{char_json['name_kanji']}]\n"
-    else:
-        msg += "\n"
-    if char_json["nicknames"]:
-        nicknames_string = ", ".join(char_json["nicknames"])
-        msg += f"\n**Nicknames** : `{nicknames_string}`\n"
-    about = char_json["about"].split("\n", 1)[0].strip().replace("\n", "")
-    msg += f"\n**About**: __{about}__"
-    await event.reply(msg, file=pic, force_document=False)
-    await xx.delete()
+        await message.client.send_file(message.chat_id, photo, caption=caption)
+        await hell.delete()
+    except Exception:
+        await hell.edit(caption, link_preview=False)
+
+    if os.path.exists(photo):
+        os.remove(photo)
+
+
+@ultroid_cmd(pattern="manga ?(.*)$")
+async def manga(message):
+    query = message.pattern_match.group(1)
+    if not query:
+    	return await eod(message, "Give search query")
+    hell = await message.eor("Searching ...")
+    caption, photo = await get_manga_info(query)
+
+    try:
+        await message.client.send_file(message.chat_id, photo, caption=caption)
+        await hell.delete()
+    except Exception:
+        await hell.edit(caption, link_preview=False)
+
+    if os.path.exists(photo):
+        os.remove(photo)
+
+
+@ultroid_cmd(pattern="char ?(.*)$")
+async def character(message):
+    query = message.pattern_match.group(1)
+    if not query:
+    	return await eod(message, "Give search query")
+    hell = await message.eor("Searching ...")
+    caption, photo = await get_character_info(query)
+
+    try:
+        await message.client.send_file(message.chat_id, photo, caption=caption)
+        await hell.delete()
+    except Exception:
+        await hell.edit(caption, link_preview=False)
+
+    if os.path.exists(photo):
+        os.remove(photo)
+
+
+@ultroid_cmd(pattern="airing ?(.*)$")
+async def airing(message):
+    query = message.pattern_match.group(1)
+    if not query:
+    	return await eod(message, "Give search query")
+    hell = await message.eor("Searching ...")
+    caption, photo = await get_airing_info(query)
+
+    try:
+        await message.client.send_file(message.chat_id, photo, caption=caption)
+        await hell.delete()
+    except Exception:
+        await hell.edit(caption, link_preview=False)
+
+    if os.path.exists(photo):
+        os.remove(photo)
+
+
+@ultroid_cmd(pattern="aniuser ?(.*)$")
+async def anilist_user(message):
+    query = message.pattern_match.group(1)
+    if not query:
+    	return await eod(message, "Give search query")
+    hell = await message.eor("Searching ...")
+    caption, photo = await get_anilist_user_info(query)
+
+    try:
+        await message.client.send_file(message.chat_id, photo, caption=caption)
+        await hell.delete()
+    except Exception:
+        await hell.edit(caption, link_preview=False)
+
+    if os.path.exists(photo):
+        os.remove(photo)
+
+
+@ultroid_cmd(pattern="filler ?(.*)$")
+async def fillers(message):
+    query = message.pattern_match.group(1)
+    if not query:
+    	return await eod(message, "Give search query")
+    hell = await message.eor("Searching ...")
+
+    caption = await get_filler_info(query)
+    if caption == "":
+        return await eod(message, "No results found!")
+
+    await hell.edit(caption, link_preview=False)
+
+
+@ultroid_cmd(pattern="waord ?(.*)$")
+async def watch_order(message):
+    query = message.pattern_match.group(1)
+    if not query:
+    	return await eod(message, "Give search query")
+    hell = await message.eor("Searching ...")
+
+    caption = await get_watch_order(query)
+    if caption == "":
+        return await eod(message, "No results found!")
+
+    await hell.edit(caption, link_preview=False)
