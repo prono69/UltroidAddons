@@ -1,34 +1,32 @@
 # Ported from Hellbot for Ultroid by @NeoMatrix90
-
 """
 ✘ Commands Available -
 
 • `{i}anime <anime name>`
    __Get an info about the mentioned anime.__
-   
+
 • `{i}manga <manga name>`
    __Get an info about the mentioned manga.__
-   
+
 • `{i}char <character name>`
    __Get an info about the mentioned character.__
-   
+
 • `{i}airing <anime name>`
    __Get an airing info about the mentioned anime.__
-   
+
 • `{i}aniuser <anilist username>`
    __Get an info about the mentioned anilist user.__
-   
+
 • `{i}filler <anime name>`
    __Get the list of filler/canon episodes about the mentioned anime.__
-   
+
 • `{i}waord <anime name>`
    __Get the watch order about the mentioned anime.__
-   
+
 """
 
 import os
-from . import ultroid_cmd
-from telethon.errors import ChatSendMediaForbiddenError
+
 from pyUltroid.fns.anilist import (
     get_airing_info,
     get_anilist_user_info,
@@ -38,12 +36,16 @@ from pyUltroid.fns.anilist import (
     get_manga_info,
     get_watch_order,
 )
+from telethon.errors import ChatSendMediaForbiddenError
+
+from . import ultroid_cmd
+
 
 @ultroid_cmd(pattern="anime ?(.*)$")
 async def anime(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "`B~Baka, I can't search the void`")
+        return await eod(message, "`B~Baka, I can't search the void`")
     hell = await message.eor("__Searching ...__")
     caption, photo = await get_anime_info(query)
 
@@ -61,7 +63,7 @@ async def anime(message):
 async def manga(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "`B~Baka, I can't search the void`")
+        return await eod(message, "`B~Baka, I can't search the void`")
     hell = await message.eor("__Searching ...__")
     caption, photo = await get_manga_info(query)
 
@@ -79,7 +81,7 @@ async def manga(message):
 async def character(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "`B~Baka, I can't search the void`")
+        return await eod(message, "`B~Baka, I can't search the void`")
     hell = await message.eor("__Searching ...__")
     caption, photo = await get_character_info(query)
 
@@ -97,7 +99,7 @@ async def character(message):
 async def airing(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "`B~Baka, I can't search the void`")
+        return await eod(message, "`B~Baka, I can't search the void`")
     hell = await message.eor("__Searching ...__")
     caption, photo = await get_airing_info(query)
 
@@ -115,7 +117,7 @@ async def airing(message):
 async def anilist_user(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "`B~Baka, I can't search the void`")
+        return await eod(message, "`B~Baka, I can't search the void`")
     hell = await message.eor("__Searching ...__")
     caption, photo = await get_anilist_user_info(query)
 
@@ -133,7 +135,7 @@ async def anilist_user(message):
 async def fillers(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "`B~Baka, I can't search the void`")
+        return await eod(message, "`B~Baka, I can't search the void`")
     hell = await message.eor("__Searching ...__")
 
     caption = await get_filler_info(query)
@@ -147,7 +149,7 @@ async def fillers(message):
 async def watch_order(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "`B~Baka, I can't search the void`")
+        return await eod(message, "`B~Baka, I can't search the void`")
     hell = await message.eor("__Searching ...__")
 
     caption = await get_watch_order(query)
