@@ -1,6 +1,5 @@
 import os
 
-from . import ultroid_cmd
 from pyUltroid.fns.anilist import (
     get_airing_info,
     get_anilist_user_info,
@@ -11,12 +10,14 @@ from pyUltroid.fns.anilist import (
     get_watch_order,
 )
 
+from . import ultroid_cmd
+
 
 @ultroid_cmd(pattern="anime ?(.*)$")
 async def anime(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "Give search query")
+        return await eod(message, "Give search query")
     hell = await message.eor("Searching ...")
     caption, photo = await get_anime_info(query)
 
@@ -34,7 +35,7 @@ async def anime(message):
 async def manga(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "Give search query")
+        return await eod(message, "Give search query")
     hell = await message.eor("Searching ...")
     caption, photo = await get_manga_info(query)
 
@@ -52,7 +53,7 @@ async def manga(message):
 async def character(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "Give search query")
+        return await eod(message, "Give search query")
     hell = await message.eor("Searching ...")
     caption, photo = await get_character_info(query)
 
@@ -70,7 +71,7 @@ async def character(message):
 async def airing(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "Give search query")
+        return await eod(message, "Give search query")
     hell = await message.eor("Searching ...")
     caption, photo = await get_airing_info(query)
 
@@ -88,7 +89,7 @@ async def airing(message):
 async def anilist_user(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "Give search query")
+        return await eod(message, "Give search query")
     hell = await message.eor("Searching ...")
     caption, photo = await get_anilist_user_info(query)
 
@@ -106,7 +107,7 @@ async def anilist_user(message):
 async def fillers(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "Give search query")
+        return await eod(message, "Give search query")
     hell = await message.eor("Searching ...")
 
     caption = await get_filler_info(query)
@@ -120,7 +121,7 @@ async def fillers(message):
 async def watch_order(message):
     query = message.pattern_match.group(1)
     if not query:
-    	return await eod(message, "Give search query")
+        return await eod(message, "Give search query")
     hell = await message.eor("Searching ...")
 
     caption = await get_watch_order(query)
