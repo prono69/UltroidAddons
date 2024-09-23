@@ -1,21 +1,20 @@
 """
 ❍ Commands Available -
- 
+
 • `{i}nm or {i}nm <type>`
     __Sends a SFW waifu.__
-    
+
 • `{i}nm -n or {i}nm -n <type>`
     __Sends a NSFW waifu.__
- 
+
 ~ NSFW: `ass` `ecchi` `ero` `milf` `hentai` `oral` `paizuri`
- 
+
 ~ VERSITILE: `maid` `marin-kitagawa` `mori-calliope` `oppai`
      `raiden-shogun` `selfies` `uniform` `waifu`
 """
 
 import requests
 from pyUltroid.fns.misc import unsavegif
-
 
 # This list is for waifu.im
 ISFW = [
@@ -94,4 +93,3 @@ async def _(event):
     except Exception:
         pass
     await catevent.delete()
-    
