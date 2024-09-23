@@ -1,13 +1,11 @@
 """
 Get instagram videos by bot conv
 
-Command : `{i}insta <input or reply link>`
+Command : `{i}idl <input or reply link>`
 """
 
 import asyncio
-
 from telethon.errors.rpcerrorlist import YouBlockedUserError
-
 from . import ultroid_cmd
 
 
