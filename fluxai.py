@@ -6,17 +6,23 @@
 • `{i}fai <promt or reply>`
     __Generate image using prompts.__
 """
-import requests
-import os
+
 import io
+import os
 import time
+
+import requests
 from PIL import Image
+
 from . import LOGS
 
 HUGGING_TOKEN = os.getenv("HF2")
 
+
 async def schellwithflux(args):
-    API_URL = "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
+    API_URL = (
+        "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell"
+    )
     headers = {"Authorization": f"Bearer {HUGGING_TOKEN}"}
     payload = {"inputs": args}
     response = requests.post(API_URL, headers=headers, json=payload)
@@ -25,15 +31,16 @@ async def schellwithflux(args):
         return None
     return response.content
 
+
 @ultroid_cmd(pattern="fai ?(.*)$")
 async def imgfluxai_(message):
     ok = await message.eor("`Processing...`", 20)
     question = message.pattern_match.group(1)
     reply = await message.get_reply_message()
     if not question and message.is_reply:
-    	question = reply.text
+        question = reply.text
     else:
-    	return await ok.edit("__Please provide a question for Flux.__")
+        return await ok.edit("__Please provide a question for Flux.__")
     try:
         if not HUGGING_TOKEN:
             return await ok.edit("`HUGGING_TOKEN` is required to use this feature.")
