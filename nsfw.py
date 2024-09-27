@@ -182,10 +182,12 @@ fantox_help += "   ".join(f"`{i.lower()}`" for i in NSFW)
 async def fanbox(event):
     query = event.pattern_match.group(1)
     kk = await event.eor(f"__Fetching {query} image...__")
+    if query is not None:
+    	query = choice(NSFW)
 
     if query == "-h" or query not in NSFW:
         return await kk.edit(f"**Here's your tags!**\n\n{fantox_help}")
-    query = query or choice(NSFW)
+    #  query = query or choice(NSFW)
     try:
         response = requests.get(f"https://fantox-apis.vercel.app/{query}")
         pic = response.json().get("url")
