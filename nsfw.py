@@ -183,7 +183,7 @@ async def fanbox(event):
     query = event.pattern_match.group(1)
     kk = await event.eor(f"__Fetching {query} image...__")
     if query is not None:
-    	query = choice(NSFW)
+        query = choice(NSFW)
 
     if query == "-h" or query not in NSFW:
         return await kk.edit(f"**Here's your tags!**\n\n{fantox_help}")
