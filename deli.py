@@ -53,7 +53,7 @@ async def delirus_api(query):
         file_name = "abj.png"
     elif query == "cum2":
         url = FG_API + f"nsfw-nime/cum?apikey={fg}"
-        file_name = "cum.png"        
+        file_name = "cum.png"
     elif query == "cos":
         url = FG_API + f"nsfw/cosplay?apikey={fg}"
         file_name = "cosplay.png"
@@ -95,7 +95,7 @@ async def delirus_api(query):
         file_name = "blow.png"
     elif query == "apussy":
         url = ZEN_API + f"animensfw/pussy?apikey={zenkey}"
-        file_name = "apussy.png"    
+        file_name = "apussy.png"
     elif query == "cos2":
         url = f"https://api.ouzen.xyz/randomimage/cosplay?apikey={zenkey}"
         file_name = "cos2.png"
