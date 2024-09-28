@@ -1,5 +1,7 @@
-import requests
 import os
+
+import requests
+
 
 @ultroid_cmd(pattern="fbdl ?(.*)$")
 async def fb_dl(event):
@@ -7,8 +9,8 @@ async def fb_dl(event):
     query = event.pattern_match.group(1)
     reply = await event.get_reply_message()
     if not query and event.is_reply:
-    	query = reply.text
-    
+        query = reply.text
+
     if not query:
         return await event.eor("__Please provide a valid Facebook video URL__", 5)
 
@@ -28,14 +30,14 @@ async def fb_dl(event):
         "Sec-Fetch-Dest": "empty",
         "Referer": "https://fbdown.online/",
         "Accept-Encoding": "gzip, deflate, br, zstd",
-        "Accept-Language": "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7"
+        "Accept-Language": "en-IN,en-GB;q=0.9,en-US;q=0.8,en;q=0.7",
     }
 
     data = {
         "url": query,
-        "token": "36d935ff24a0c15593d056afa4dd8c067084ba2f2f950dc81d5de85aad6f1d33"
+        "token": "36d935ff24a0c15593d056afa4dd8c067084ba2f2f950dc81d5de85aad6f1d33",
     }
-    
+
     kk = await event.eor("__Fetching video...__")
 
     try:
@@ -47,15 +49,17 @@ async def fb_dl(event):
         # Extract the video URL and thumbnail
         video_url = result.get("medias", [])[0].get("url")
         # thumbnail_url = result.get("thumbnail", "")
-        
+
         if not video_url:
-            return await kk.edit("__Failed to retrieve video. Please check the URL or try again later.__")
-            
+            return await kk.edit(
+                "__Failed to retrieve video. Please check the URL or try again later.__"
+            )
+
         video_response = requests.get(video_url)
         filename = "fb_video.mp4"
-        with open(filename, 'wb') as f:
+        with open(filename, "wb") as f:
             f.write(video_response.content)
-            
+
         await event.client.send_file(event.chat_id, file=filename)
 
         # Clean up the local video file
@@ -69,4 +73,3 @@ async def fb_dl(event):
     except Exception as e:
         # Handle any other errors
         await kk.edit(f"An error occurred: `{str(e)}`")
-        
