@@ -53,7 +53,7 @@ async def delirus_api(e, query):
         file_name = "abj.png"
     elif query == "cum2":
         url = FG_API + f"nsfw-nime/cum?apikey={fg}"
-        file_name = "cum.png"        
+        file_name = "cum.png"
     elif query == "cos":
         url = FG_API + f"nsfw/cosplay?apikey={fg}"
         file_name = "cosplay.png"
@@ -95,7 +95,7 @@ async def delirus_api(e, query):
         file_name = "blow.png"
     elif query == "apussy":
         url = ZEN_API + f"animensfw/pussy?apikey={zenkey}"
-        file_name = "apussy.png"    
+        file_name = "apussy.png"
     elif query == "cos2":
         url = f"https://api.ouzen.xyz/randomimage/cosplay?apikey={zenkey}"
         file_name = "cos2.png"
@@ -151,15 +151,18 @@ async def delirus_api(e, query):
                     await e.client.send_file(e.chat_id, file_name)
                     os.remove(file_name)
                 else:
-                    await e.eor(f"Failed to download the image. Status code: {image_response.status_code}")
+                    await e.eor(
+                        f"Failed to download the image. Status code: {image_response.status_code}"
+                    )
             else:
                 async with aiofiles.open(file_name, "wb") as file:
                     await file.write(response.content)
                 await e.client.send_file(e.chat_id, file_name)
                 os.remove(file_name)
         else:
-            await e.eor(f"Failed to retrieve the image URL. Status code: {response.status_code}")
-            
+            await e.eor(
+                f"Failed to retrieve the image URL. Status code: {response.status_code}"
+            )
 
     except requests.exceptions.RequestException as e:
         await e.eor(f"Request failed: `{e}`")
