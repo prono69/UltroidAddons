@@ -22,7 +22,7 @@ SHIZO_API = "https://shizoapi.onrender.com/api/"
 session = requests.Session()
 
 
-async def delirus_api(query):
+async def delirus_api(e, query):
     # Determine the API URL and file name based on the query.
     if query == "ko":
         url = BASE + "nsfw/corean"
@@ -133,7 +133,7 @@ async def delirus_api(query):
         url = SHIZO_API + "sfw/milf?apikey=shizo"
         file_name = "milf.jpg"
     else:
-        return "Invalid query"
+        return await e.eor("`Invalid Query`", 5)
 
     try:
         # Using the session for connection reuse
@@ -148,31 +148,26 @@ async def delirus_api(query):
                 if image_response.status_code == 200:
                     async with aiofiles.open(file_name, "wb") as file:
                         await file.write(image_response.content)
-                    return os.path.abspath(file_name)
+                    await e.client.send_file(e.chat_id, file_name)
+                    os.remove(file_name)
                 else:
-                    return f"Failed to download the image. Status code: {image_response.status_code}"
+                    await e.eor(f"Failed to download the image. Status code: {image_response.status_code}")
             else:
                 async with aiofiles.open(file_name, "wb") as file:
                     await file.write(response.content)
-                return os.path.abspath(file_name)
+                await e.client.send_file(e.chat_id, file_name)
+                os.remove(file_name)
         else:
-            return (
-                f"Failed to retrieve the image URL. Status code: {response.status_code}"
-            )
+            await e.eor(f"Failed to retrieve the image URL. Status code: {response.status_code}")
+            
 
     except requests.exceptions.RequestException as e:
-        return f"Request failed: {e}"
+        await e.eor(f"Request failed: `{e}`")
 
 
 @ultroid_cmd(pattern="de ?(.*)$")
-async def r_pics(event):
-    query = event.pattern_match.group(1)
-    kk = await event.eor("__No horny...__")
-    pic = await delirus_api(query if query else "loli")
-
-    try:
-        await event.client.send_file(event.chat_id, pic)
-        os.remove(pic)
-        await kk.delete()
-    except Exception as e:
-        await kk.edit(f"Error: `{e}`")
+async def r_pics(e):
+    query = e.pattern_match.group(1)
+    kk = await e.eor("__No horny...__")
+    await delirus_api(e, query if query else "loli")
+    await kk.delete()
