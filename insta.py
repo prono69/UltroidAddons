@@ -32,9 +32,9 @@ async def insta_dl(event):
             event, "` I need a Instagram link to download it's Video...`(*_*)"
         )
     v1 = "Fullsavebot"
-    v2 = "UVDownloaderBot"
+    v2 = "uvd_bot"
     media_list = []
-    eyepatch = await event.eor("**Downloading.....**")
+    eyepatch = await event.eor("__Hold your candle a little bit__")
     async with event.client.conversation(v1) as conv:
         try:
             v1_flag = await conv.send_message("/start")
@@ -72,7 +72,7 @@ async def insta_dl(event):
                 return await delete_conv(event, v1, v1_flag)
         except asyncio.TimeoutError:
             await delete_conv(event, v1, v1_flag)
-        await event.eor("**Switching v2...**")
+        await event.eor("__Switching v2...__")
         async with event.client.conversation(v2) as conv:
             try:
                 v2_flag = await conv.send_message("/start")
