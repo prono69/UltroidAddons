@@ -57,7 +57,8 @@ async def anime_handler(message):
             message.chat_id,
             file=img,
             caption=f'<b>{ra.tag_string_general if ra.tag_string_general else "Untitled"}</b>',
-            parse_mode="html"
+            parse_mode="html",
+            reply_to=message.reply_to_msg_id
         )
         return await message.delete()
     except Exception as e:

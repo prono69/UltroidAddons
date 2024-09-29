@@ -1,11 +1,21 @@
+"""
+**FACEBOOK DOWNLOADER**
+
+❍ Commands Available -
+
+• `{i}fbdl <link or reply>`
+    __Downloads facebook video using API.__
+"""
+
 import os
-
 import requests
-
+import aiofiles
+from pyUltroid.fns.tools import metadata
+from telethon.tl.types import DocumentAttributeFilename, DocumentAttributeVideo
+import wget
 
 @ultroid_cmd(pattern="fbdl ?(.*)$")
 async def fb_dl(event):
-    # Extract the Facebook video URL from the user's input
     query = event.pattern_match.group(1)
     reply = await event.get_reply_message()
     if not query and event.is_reply:
@@ -45,31 +55,55 @@ async def fb_dl(event):
         response.raise_for_status()  # Check if the request was successful
 
         result = response.json()
-
-        # Extract the video URL and thumbnail
+        
         video_url = result.get("medias", [])[0].get("url")
-        # thumbnail_url = result.get("thumbnail", "")
-
+        thumbnail_url = result.get("thumbnail", "")
+        thumb = wget.download(thumbnail_url)
+        
         if not video_url:
-            return await kk.edit(
-                "__Failed to retrieve video. Please check the URL or try again later.__"
-            )
+            return await kk.edit("__Failed to retrieve video. Please check the URL or try again later.__")
 
-        video_response = requests.get(video_url)
+        # asynchronous
+        video_response = requests.get(video_url, stream=True)
         filename = "fb_video.mp4"
-        with open(filename, "wb") as f:
-            f.write(video_response.content)
+        async with aiofiles.open(filename, "wb") as f:
+            await f.write(video_response.content)
 
-        await event.client.send_file(event.chat_id, file=filename)
+        # Extract metadata from the downloaded video
+        meta = await metadata(filename)
+        if meta is not None:
+            video_duration_in_seconds = meta.get("duration", "")
+            video_size = (meta.get("width", ""), meta.get("height", ""))
+            
+            attributes = [
+                DocumentAttributeFilename(filename),
+                DocumentAttributeVideo(
+                    duration=video_duration_in_seconds,
+                    w=video_size[0],
+                    h=video_size[1],
+                    supports_streaming=True,
+                ),
+            ]
 
-        # Clean up the local video file
-        os.remove(filename)
+        
+        file, _ = await event.client.fast_uploader(filename, show_progress=True, event=event, to_delete=True)
+        thumbnail, _ = await event.client.fast_uploader(thumb, show_progress=True, event=event, to_delete=True)
+        
+        await event.client.send_file(
+            event.chat_id,
+            file=file,
+            thumb=thumbnail,
+            reply_to=event.reply_to_msg_id,
+            attributes=attributes,
+            supports_streaming=True,
+        )
+        
         await kk.delete()
 
     except requests.exceptions.RequestException as e:
         # Handle any request-related errors
-        await kk.edit(f"Failed to fetch video: `{str(e)}`")
+        await event.eor(f"Failed to fetch video: `{str(e)}`", 6)
 
     except Exception as e:
         # Handle any other errors
-        await kk.edit(f"An error occurred: `{str(e)}`")
+        await event.eor(f"An error occurred: `{str(e)}`", 6)

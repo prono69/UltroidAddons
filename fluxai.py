@@ -31,9 +31,8 @@ async def flux_ai(event):
             filename = "flux_image.jpg"
             with open(filename, 'wb') as f:
                 f.write(response.content)
-
-            # Send the image to the chat
-            await event.client.send_file(event.chat_id, filename, caption="__Here is your generated image!__")
+                
+            await event.client.send_file(event.chat_id, filename, caption="__Here is your generated image!__", reply_to=event.reply_to_msg_id)
             
             os.remove(filename)
             await kk.delete()

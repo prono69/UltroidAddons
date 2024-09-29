@@ -44,13 +44,13 @@ async def girls(event):
         res.raise_for_status()  # Check if the request was successful (status code 200)
 
         # Extract the picture URL
-        pic = res.json().get("data", {}).get("url", "https://http.cat/502")
+        pic = res.json().get("data", {}).get("url", "https://http.cat/502.jpg")
 
-        await event.client.send_file(event.chat_id, pic)
+        await event.client.send_file(event.chat_id, pic, reply_to=event.reply_to_msg_id)
         await kk_.delete()
 
     except requests.exceptions.RequestException:
-        await event.client.send_file(event.chat_id, file="https://http.cat/503")
+        await event.client.send_file(event.chat_id, file="https://http.cat/503.jpg", reply_to=event.reply_to_msg_id)
 
 
 @ultroid_cmd(pattern="ngal ?(.*)$")
@@ -124,10 +124,10 @@ async def girls(event):
         res.raise_for_status()  # Check if the request was successful (status code 200)
 
         # Extract the picture URL
-        pic = res.json().get("result", "https://http.cat/502")
+        pic = res.json().get("result", "https://http.cat/502.jpg")
 
-        await event.client.send_file(event.chat_id, pic)
+        await event.client.send_file(event.chat_id, pic, reply_to=event.reply_to_msg_id)
         await kk_.delete()
 
     except requests.exceptions.RequestException:
-        await event.client.send_file(event.chat_id, file="https://http.cat/503")
+        await event.client.send_file(event.chat_id, file="https://http.cat/503.jpg", reply_to=event.reply_to_msg_id)

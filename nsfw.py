@@ -85,8 +85,7 @@ async def _(event):
     catevent = await event.eor("`Processing...`")
     resp = requests.get(url).json()
     target = resp["images"][0]["url"]
-
-    # Send the image
+    
     nohorny = await event.client.send_file(
         event.chat_id, file=target, caption=f"__**{choose}**__", reply_to=reply_to
     )
@@ -182,22 +181,21 @@ fantox_help += "   ".join(f"`{i.lower()}`" for i in NSFW)
 async def fanbox(event):
     query = event.pattern_match.group(1)
     kk = await event.eor(f"__Fetching {query} image...__")
+    reply_to = event.reply_to_msg_id
     if query is not None:
     	query = choice(NSFW)
 
     if query == "-h" or query not in NSFW:
         return await kk.edit(f"**Here's your tags!**\n\n{fantox_help}")
-    #  query = query or choice(NSFW)
+    
     try:
         response = requests.get(f"https://fantox-apis.vercel.app/{query}")
         pic = response.json().get("url")
 
-        await event.client.send_file(event.chat_id, pic)
-        # Uncomment the line below to delete the pic after sending (if saved locally)
-        # os.remove(pic)
+        await event.client.send_file(event.chat_id, pic, reply_to=reply_to)
     except PhotoSaveFileInvalidError:
-        await event.client.send_file(event.chat_id, pic, force_document=True)
+        await event.client.send_file(event.chat_id, pic, force_document=True, reply_to=reply_to)
     except WebpageCurlFailedError:
-        await event.client.send_file(event.chat_id, file="https://http.cat/404.jpg")
+        await event.client.send_file(event.chat_id, file="https://http.cat/404.jpg", reply_to=reply_to)
 
     await kk.delete()

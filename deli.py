@@ -148,21 +148,21 @@ async def delirus_api(e, query):
                 if image_response.status_code == 200:
                     async with aiofiles.open(file_name, "wb") as file:
                         await file.write(image_response.content)
-                    await e.client.send_file(e.chat_id, file_name)
+                    await e.client.send_file(e.chat_id, file_name, reply_to=e.reply_to_msg_id)
                     os.remove(file_name)
                 else:
-                    await e.eor(f"Failed to download the image. Status code: {image_response.status_code}")
+                    await e.eor(f"Failed to download the image. Status code: {image_response.status_code}", 6)
             else:
                 async with aiofiles.open(file_name, "wb") as file:
                     await file.write(response.content)
-                await e.client.send_file(e.chat_id, file_name)
+                await e.client.send_file(e.chat_id, file_name, reply_to=e.reply_to_msg_id)
                 os.remove(file_name)
         else:
-            await e.eor(f"Failed to retrieve the image URL. Status code: {response.status_code}")
+            await e.eor(f"Failed to retrieve the image URL. Status code: {response.status_code}", 6)
             
 
     except requests.exceptions.RequestException as e:
-        await e.eor(f"Request failed: `{e}`")
+        await e.eor(f"Request failed: `{e}`", 6)
 
 
 @ultroid_cmd(pattern="de ?(.*)$")
