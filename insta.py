@@ -70,7 +70,7 @@ async def insta_dl(event):
                     event.chat_id,
                     media_list,
                     caption=f"**{details[0]}**",
-                    reply_to=event.reply_to_msg_id
+                    reply_to=event.reply_to_msg_id,
                 )
                 return await delete_conv(event, v1, v1_flag)
         except asyncio.TimeoutError:
@@ -92,9 +92,12 @@ async def insta_dl(event):
             await event.client.send_read_acknowledge(conv.chat_id)
             if media.media:
                 await eyepatch.delete()
-                await event.client.send_file(event.chat_id, media, reply_to=event.reply_to_msg_id)
+                await event.client.send_file(
+                    event.chat_id, media, reply_to=event.reply_to_msg_id
+                )
             else:
                 await event.eor(
-                    f"**#ERROR\nv1 :** __Not valid URL__\n\n**v2 :**__ {media.text}__", 5
+                    f"**#ERROR\nv1 :** __Not valid URL__\n\n**v2 :**__ {media.text}__",
+                    5,
                 )
             await delete_conv(event, v2, v2_flag)
