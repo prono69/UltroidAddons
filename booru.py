@@ -5,14 +5,17 @@
     __Sends a random image from Danbooru.__
 """
 
-from . import ultroid_cmd
-from aiohttp import ClientSession
-from io import BytesIO
-import aiofiles
 import os
+from io import BytesIO
+
+import aiofiles
 import requests
+from aiohttp import ClientSession
+
+from . import ultroid_cmd
 
 session = ClientSession()
+
 
 class Post:
     def __init__(self, source: dict, session: ClientSession):
@@ -24,13 +27,15 @@ class Post:
         return (
             self.file_url
             if self.file_url
-            else self.large_file_url
-            if self.large_file_url
-            else self.source
-            if self.source and "pximg" not in self.source
-            else await self.pximg
-            if self.source
-            else None
+            else (
+                self.large_file_url
+                if self.large_file_url
+                else (
+                    self.source
+                    if self.source and "pximg" not in self.source
+                    else await self.pximg if self.source else None
+                )
+            )
         )
 
     @property
@@ -41,11 +46,13 @@ class Post:
     def __getattr__(self, item):
         return self._json.get(item)
 
+
 async def random():
     async with session.get(
         url="https://danbooru.donmai.us/posts/random.json"
     ) as response:
         return Post(await response.json(encoding="utf-8"), session)
+
 
 @ultroid_cmd(pattern="booru ?(.*)$")
 async def booru(message):
@@ -58,7 +65,9 @@ async def booru(message):
             num_images = int(query)
             save_to_disk = True
 
-        await message.eor(f"<b><i>Searching {num_images} art(s)...</i></b>", parse_mode="html")
+        await message.eor(
+            f"<b><i>Searching {num_images} art(s)...</i></b>", parse_mode="html"
+        )
 
         media_group = []
         for i in range(num_images):
