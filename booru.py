@@ -1,16 +1,18 @@
 """
 ✘ Commands Available -
 
-• `{i}booru`
-    __Send a random image from Danbooru.__
+• `{i}booru <no. of pics> (default to 1)`
+    __Sends a random image from Danbooru.__
 """
 
 from . import ultroid_cmd
 from aiohttp import ClientSession
 from io import BytesIO
+import aiofiles
+import os
+import requests
 
 session = ClientSession()
-
 
 class Post:
     def __init__(self, source: dict, session: ClientSession):
@@ -39,27 +41,76 @@ class Post:
     def __getattr__(self, item):
         return self._json.get(item)
 
-
 async def random():
     async with session.get(
         url="https://danbooru.donmai.us/posts/random.json"
     ) as response:
         return Post(await response.json(encoding="utf-8"), session)
 
-
 @ultroid_cmd(pattern="booru ?(.*)$")
-async def anime_handler(message):
+async def booru(message):
     try:
-        await message.eor("<b>Searching art</b>", parse_mode="html")
-        ra = await random()
-        img = await ra.image
-        await message.client.send_file(
-            message.chat_id,
-            file=img,
-            caption=f'<b>{ra.tag_string_general if ra.tag_string_general else "Untitled"}</b>',
-            parse_mode="html",
-            reply_to=message.reply_to_msg_id
-        )
-        return await message.delete()
+        query = message.pattern_match.group(1).strip()
+        num_images = 1
+        save_to_disk = False
+
+        if query.isdigit():
+            num_images = int(query)
+            save_to_disk = True
+
+        await message.eor(f"<b><i>Searching {num_images} art(s)...</i></b>", parse_mode="html")
+
+        media_group = []
+        for i in range(num_images):
+            ra = await random()
+            img_url = await ra.image
+
+            if save_to_disk:
+                response = requests.get(img_url, stream=True)
+                if response.status_code == 200:
+                    filename = f"booru_image_{i}.jpg"
+                    async with aiofiles.open(filename, "wb") as f:
+                        await f.write(response.content)
+
+                    # Upload the file
+                    uploaded_img = await message.client.upload_file(filename)
+                    media_group.append(
+                        {
+                            "file": uploaded_img,
+                            # "caption": f'<b>{ra.tag_string_general if ra.tag_string_general else "Untitled"}</b>',
+                            # "parse_mode": "html",
+                        }
+                    )
+                else:
+                    await message.eor("Failed to fetch image.", parse_mode="html")
+                    return
+
+            else:
+                # Directly send the file without saving to disk
+                await message.client.send_file(
+                    message.chat_id,
+                    file=img_url,
+                    caption=f'<b>{ra.tag_string_general if ra.tag_string_general else "Untitled"}</b>',
+                    parse_mode="html",
+                    reply_to=message.reply_to_msg_id,
+                )
+                return await message.delete()
+
+        if save_to_disk and num_images > 1:
+            # Send as media group
+            await message.client.send_file(
+                message.chat_id,
+                [m["file"] for m in media_group],
+                caption="<b><i>Here's your images y~you pervert!</i></b>",
+                parse_mode="html",
+                reply_to=message.reply_to_msg_id,
+            )
+
+            # Remove saved files from disk after sending
+            for i in range(num_images):
+                os.remove(f"booru_image_{i}.jpg")
+
+        await message.delete()
+
     except Exception as e:
-        await eod(message, f"Error:\n>> `{e}`", parse_mode="html")
+        await message.eor(f"Error:\n>> `{e}`")

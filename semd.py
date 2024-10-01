@@ -49,7 +49,7 @@ async def semd_plugin(ult):
     if not args:
         return await ult.eor("`Give a plugin name to send..`", time=5)
 
-    eris = await ult.eor("...")
+    eris = await ult.eor(f"__Sending {args} plugin...__")
     if not (path := send(args)):
         path = alt_send(args)
     if not path:
