@@ -5,9 +5,11 @@
     __Get information about top 5 trending hentai of the week.__
 """
 
-import requests
-import aiofiles
 import os
+
+import aiofiles
+import requests
+
 
 @ultroid_cmd(pattern="hen$")
 async def hentai_trend(event):
@@ -37,29 +39,27 @@ async def hentai_trend(event):
             caption_message += message_part
 
             cover_url = data.get("cover_url", "")
-            
+
             # Download the cover image
             filename = f"hentai_cover_{index}.jpg"
             cover_response = requests.get(cover_url)
             if cover_response.status_code == 200:
-                async with aiofiles.open(filename, 'wb') as f:
+                async with aiofiles.open(filename, "wb") as f:
                     await f.write(cover_response.content)
-                
+
                 # Add to media group (the album)
-                media_group.append(
-                    await event.client.upload_file(filename)
-                )
+                media_group.append(await event.client.upload_file(filename))
 
                 # Remove the file after adding to media group
                 os.remove(filename)
             else:
-                await event.client.send_message(event.chat_id, f"Failed to fetch image for {data['name']}")
+                await event.client.send_message(
+                    event.chat_id, f"Failed to fetch image for {data['name']}"
+                )
 
         # Send the media group (album) with the combined caption
         await event.client.send_file(
-            event.chat_id,
-            media_group,
-            caption=caption_message
+            event.chat_id, media_group, caption=caption_message
         )
 
         await kk.delete()
@@ -68,4 +68,3 @@ async def hentai_trend(event):
         await kk.edit(f"ERROR: Failed to fetch data. Try again later.\n\n`{str(e)}`")
     except Exception as e:
         await kk.edit(f"An error occurred: \n\n`{str(e)}`")
-        
