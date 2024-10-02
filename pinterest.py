@@ -5,15 +5,17 @@
     __Get images from pinterest.__
 """
 
-from PIL import Image
-import requests
+import asyncio
 import io
 import os
+
 import aiofiles
-import asyncio
+import requests
+from PIL import Image
 
 # Pinterest API URL
 API_URL = "https://bk9.fun/pinterest/search?q="
+
 
 # Resize the image if it's larger than 1280x1280
 def resize_image(image_bytes):
@@ -23,7 +25,7 @@ def resize_image(image_bytes):
             if img.size > max_size:
                 img.thumbnail(max_size)
                 output = io.BytesIO()
-                img.save(output, format='JPEG')
+                img.save(output, format="JPEG")
                 output.seek(0)
                 return output
             image_bytes.seek(0)  # Reset pointer if not resized
@@ -31,6 +33,7 @@ def resize_image(image_bytes):
     except Exception as e:
         print(f"Error resizing image: {e}")
         return image_bytes
+
 
 # Download image from the URL and resize it
 async def download_image(url):
@@ -43,14 +46,15 @@ async def download_image(url):
         print(f"Error downloading image: {e}")
     return None
 
+
 # Command for Pinterest search
 @ultroid_cmd(pattern="pint ?(.*)$")
 async def pinterest_search(event):
     args = event.pattern_match.group(1).strip().split()
-    
+
     if len(args) < 1:
         return await event.eor("Usage: `.pint [number] <query>`")
-    
+
     num_pics = 5  # Default number of pictures
     query = " ".join(args)
 
@@ -60,7 +64,7 @@ async def pinterest_search(event):
 
     if not query:
         return await event.eor("`Please provide a search query.`", 5)
-    
+
     status_message = await event.eor("__Searching for images...__")
 
     # API Request
@@ -84,7 +88,7 @@ async def pinterest_search(event):
                     filename = "pinterest_image.jpg"
                     async with aiofiles.open(filename, "wb") as f:
                         await f.write(img_bytes.read())
-                    
+
                     # Upload the image to Telethon
                     file = await event.client.upload_file(filename)
 
@@ -92,16 +96,16 @@ async def pinterest_search(event):
 
             if media_group:
                 await status_message.edit("__Uploading pictures...__")
-                
+
                 # Send all photos as a media group
                 await event.client.send_file(
                     event.chat_id,
                     file=media_group,
                     caption=f"__Search results for {query}__",
-                    reply_to=event.reply_to_msg_id
+                    reply_to=event.reply_to_msg_id,
                 )
                 os.remove(filename)
-                
+
                 await status_message.delete()
             else:
                 await status_message.edit("No valid images found.")
@@ -109,4 +113,3 @@ async def pinterest_search(event):
             await status_message.edit("No images found for the given query.")
     else:
         await status_message.edit("An error occurred, please try again later.")
-        
