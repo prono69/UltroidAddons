@@ -8,6 +8,7 @@
 import os
 import platform
 import sys
+
 import psutil
 
 
@@ -17,7 +18,9 @@ def b2mb(b):
 
 def find_lib(lib: str) -> str:
     try:
-        ver = os.popen(f"python3 -m pip freeze | awk '/^{lib}==/'").read().split("==")[1]
+        ver = (
+            os.popen(f"python3 -m pip freeze | awk '/^{lib}==/'").read().split("==")[1]
+        )
         if "\n" in ver:
             return ver.split("\n")[0]
         return ver
