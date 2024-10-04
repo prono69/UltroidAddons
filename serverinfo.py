@@ -8,9 +8,10 @@
 import os
 import platform
 import sys
+
 import psutil
-from telethon import __version__
 from pyUltroid.version import __version__ as UltVer
+from telethon import __version__
 
 
 def b2mb(b):
@@ -19,7 +20,9 @@ def b2mb(b):
 
 def find_lib(lib: str) -> str:
     try:
-        ver = os.popen(f"python3 -m pip freeze | awk '/^{lib}==/'").read().split("==")[1]
+        ver = (
+            os.popen(f"python3 -m pip freeze | awk '/^{lib}==/'").read().split("==")[1]
+        )
         if "\n" in ver:
             return ver.split("\n")[0]
         return ver
@@ -113,7 +116,7 @@ async def serverinfo_cmd(m):
         inf.append(find_lib("GitPython"))
     except Exception:
         inf.append("n/a")
-        
+
     try:
         inf.append(UltVer)
     except Exception:
