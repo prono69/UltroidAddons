@@ -4,11 +4,11 @@ Transcribe an audio URL using the Gladia API.
 Usage: .ytrans <audio_url>
 """
 
-import requests
-import time
-from telethon.errors.rpcerrorlist import MessageTooLongError
 import os
+import time
 
+import requests
+from telethon.errors.rpcerrorlist import MessageTooLongError
 
 # Replace with your Gladia API key
 gladia_key = f"{udB.get_key('GLADIA_API')}"
@@ -28,9 +28,7 @@ def make_fetch_request(url, headers, method="GET", data=None):
 async def transcribe_audio(message):
     query = message.pattern_match.group(1)
     reply = await message.get_reply_message()
-    audio_url = (
-        query if query else None
-    )
+    audio_url = query if query else None
 
     # Check if a valid URL was provided
     if not audio_url:
@@ -74,9 +72,7 @@ async def transcribe_audio(message):
                 """
                 try:
                     # Attempt to send transcription as a message
-                    await message.eor(
-                        result_html, parse_mode="html"
-                    )
+                    await message.eor(result_html, parse_mode="html")
                 except MessageTooLongError:
                     # Save the large response to a file
                     with open("transcription.txt", "w") as f:
@@ -87,7 +83,7 @@ async def transcribe_audio(message):
 
                     # Send the file with a caption
                     await message.client.send_file(
-                    message.chat_id,
+                        message.chat_id,
                         "transcription.txt",
                         caption=f"<u><b>General Details</b></u>:\n{general_details}",
                     )
@@ -104,4 +100,3 @@ async def transcribe_audio(message):
                 f"Transcription status: {poll_response.get('status')}"
             )
             time.sleep(30)  # Wait for a few seconds before polling again
-

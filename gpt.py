@@ -5,19 +5,19 @@ from io import BytesIO
 import requests
 
 from . import (
-    ultroid_cmd,
+    LOGS,
     async_searcher,
     check_filename,
-    udB,
-    LOGS,
     download_file,
     run_async,
+    udB,
+    ultroid_cmd,
 )
-
 
 GPT_CHAT_HISTORY = deque(maxlen=30)
 
 TELEGRAM_CHAR_LIMIT = 4096  # Telegram's message character limit
+
 
 @ultroid_cmd(
     pattern=r"gpt( ([\s\S]*)|$)",
@@ -67,13 +67,13 @@ async def openai_chat_gpt(e):
         )
 
     LOGS.debug(f'Token Used on ({query}) > {request["usage"]["completion_tokens"]}')
-    
+
     # Truncate query to 400 characters
     truncated_query = query[:400]
 
     # Prepare the full message
     full_message = f"**Query:**\n~ __{truncated_query}__\n\n**GPT-4o:**\n~ {response}"
-    
+
     if len(full_message) <= TELEGRAM_CHAR_LIMIT:
         # If it fits within the limit, send as a message
         return await eris.edit(full_message)
