@@ -53,13 +53,14 @@ async def hentai_trend(event):
                 # Remove the file after adding to media group
                 os.remove(filename)
             else:
-                await event.eor(
-                    f"Failed to fetch image for {data['name']}", 5
-                )
+                await event.eor(f"Failed to fetch image for {data['name']}", 5)
 
         # Send the media group (album) with the combined caption
         await event.client.send_file(
-            event.chat_id, media_group, caption=caption_message, reply_to=event.reply_to_msg_id
+            event.chat_id,
+            media_group,
+            caption=caption_message,
+            reply_to=event.reply_to_msg_id,
         )
 
         await kk.delete()
