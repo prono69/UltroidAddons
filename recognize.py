@@ -6,7 +6,9 @@
 """
 
 from telethon.errors.rpcerrorlist import YouBlockedUserError
+
 from . import *
+
 
 @ultroid_cmd(pattern="recognise ?(.*)")
 async def _(event):
@@ -26,7 +28,9 @@ async def _(event):
     ult = await eor(event, "recognising this media")
     async with event.client.conversation(chat) as conv:
         try:
-            response = conv.wait_event(events.NewMessage(incoming=True, from_users=461083923))
+            response = conv.wait_event(
+                events.NewMessage(incoming=True, from_users=461083923)
+            )
             await event.client.forward_messages(chat, reply_message)
             response = await response
         except YouBlockedUserError:
@@ -43,4 +47,3 @@ async def _(event):
             await ult.edit("sorry, I couldnt find it")
 
         await event.client.send_read_acknowledge(conv.chat_id)
-
