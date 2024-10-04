@@ -9,6 +9,8 @@ import os
 import platform
 import sys
 import psutil
+from telethon import __version__
+from pyUltroid.version import __version__ as UltVer
 
 
 def b2mb(b):
@@ -41,6 +43,7 @@ text = (
     "    Telethon: {}\n"
     "    Aiohttp: {}\n"
     "    GitPython: {}\n"
+    "    PyUltroid: {}\n"
     "    Python: {}\n"
     "    Pip: {}</b>"
 )
@@ -48,7 +51,7 @@ text = (
 
 @ultroid_cmd(pattern="sinfo$")
 async def serverinfo_cmd(m):
-    await m.edit("<b>🔄 Getting server info...</b>", parse_mode="html")
+    await m.edit("<b><i>🔄 Getting server info...</i></b>", parse_mode="html")
 
     inf = []
     try:
@@ -97,7 +100,7 @@ async def serverinfo_cmd(m):
         inf.append("n/a")
 
     try:
-        inf.append(find_lib("telethon"))
+        inf.append(__version__)
     except Exception:
         inf.append("n/a")
 
@@ -108,6 +111,11 @@ async def serverinfo_cmd(m):
 
     try:
         inf.append(find_lib("GitPython"))
+    except Exception:
+        inf.append("n/a")
+        
+    try:
+        inf.append(UltVer)
     except Exception:
         inf.append("n/a")
 

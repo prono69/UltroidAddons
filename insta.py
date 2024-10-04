@@ -25,6 +25,7 @@ async def insta_dl(event):
     "For downloading instagram media"
     link = event.pattern_match.group(1)
     reply = await event.get_reply_message()
+    FWRD = udB.get_key("FWRD")
     if not link and reply:
         link = reply.text
     if not link:
@@ -72,6 +73,8 @@ async def insta_dl(event):
                     caption=f"**{details[0]}**",
                     reply_to=event.reply_to_msg_id
                 )
+                if FWRD:
+                  await event.client.send_file("random_mememe", media_list, caption=f"**{details[0]}**",)
                 return await delete_conv(event, v1, v1_flag)
         except asyncio.TimeoutError:
             await delete_conv(event, v1, v1_flag)
@@ -88,11 +91,20 @@ async def insta_dl(event):
             await conv.send_message(link)
             # await conv.get_response()
             # await event.client.send_read_acknowledge(conv.chat_id)
-            media = await conv.get_response()
+            media = await conv.get_response(timeout=10)
             await event.client.send_read_acknowledge(conv.chat_id)
             if media.media:
-                await eyepatch.delete()
-                await event.client.send_file(event.chat_id, media, reply_to=event.reply_to_msg_id)
+              while True:
+                media_list.append(media)
+                try:
+                  media = await conv.get_response(timeout=4)
+                  await event.client.send_read_acknowledge(conv.chat_id)
+                except asyncio.TimeoutError:
+                	break
+              await eyepatch.delete()
+              await event.client.send_file(event.chat_id, media_list, reply_to=event.reply_to_msg_id)
+              if FWRD:
+                await event.client.send_file("random_mememe", media_list)
             else:
                 await event.eor(
                     f"**#ERROR\nv1 :** __Not valid URL__\n\n**v2 :**__ {media.text}__", 5

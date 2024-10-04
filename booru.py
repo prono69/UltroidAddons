@@ -110,7 +110,7 @@ async def booru(message):
             await message.client.send_file(
                 message.chat_id,
                 [m["file"] for m in media_group],
-                caption="<b><i>Here's your images y~you pervert!</i></b>",
+                caption=f"<b><i>Here's your {num_images} images y~you pervert!</i></b>",
                 parse_mode="html",
                 reply_to=message.reply_to_msg_id,
             )
