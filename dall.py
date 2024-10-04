@@ -1,9 +1,11 @@
-import aiohttp
 import json
 import os
-from os import system, remove
+from os import remove, system
 
-from . import ultroid_cmd, check_filename, fast_download
+import aiohttp
+
+from . import check_filename, fast_download, ultroid_cmd
+
 
 async def paal_image(prompt):
     url = "https://bot-management-4tozrh7z2a-ue.a.run.app/chat/image"
@@ -25,7 +27,9 @@ async def paal_image(prompt):
     payload = {"prompt": prompt, "bid": "edwo6pg1", "history": []}
 
     async with aiohttp.ClientSession() as session:
-        async with session.post(url, headers=headers, data=json.dumps(payload)) as response:
+        async with session.post(
+            url, headers=headers, data=json.dumps(payload)
+        ) as response:
             data = await response.json()
             if "url" not in data:
                 raise Exception("Image URL not found in the response.")
@@ -33,7 +37,9 @@ async def paal_image(prompt):
 
         async with session.get(image_url) as image_response:
             if image_response.status != 200:
-                raise Exception(f"Failed to retrieve image from URL: {image_response.status}")
+                raise Exception(
+                    f"Failed to retrieve image from URL: {image_response.status}"
+                )
             image_content = await image_response.read()
 
     image_path = check_filename("generated_image.png")
@@ -41,6 +47,7 @@ async def paal_image(prompt):
         image_file.write(image_content)
 
     return image_path
+
 
 @ultroid_cmd(pattern="dall( (.*)|$)")
 async def generate_image(event):
