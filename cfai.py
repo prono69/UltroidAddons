@@ -1,3 +1,10 @@
+"""
+✘ Commands Available -
+
+• `{i}cfai <reply or query>`
+    __Get response from the AI model using cloudflare.__
+"""
+
 import requests
 from pyUltroid import udB
 
@@ -21,6 +28,9 @@ def run(model, inputs):
 @ultroid_cmd(pattern="cfai ?(.*)")
 async def cfai(e):
     query = e.pattern_match.group(1)
+    if not query and event.is_reply:
+    	reply = await e.get_reply_message()
+    	query = reply.text
     if not query:
         return await e.eor("`Please provide a query to the command.`", 5)
 
