@@ -26,6 +26,7 @@ async def insta_dl(event):
     link = event.pattern_match.group(1)
     reply = await event.get_reply_message()
     FWRD = udB.get_key("FWRD")
+    meme = -1002051913343
     if not link and reply:
         link = reply.text
     if not link:
@@ -73,11 +74,11 @@ async def insta_dl(event):
                     caption=f"**{details[0]}**",
                     reply_to=event.reply_to_msg_id,
                 )
-                if FWRD:
+                if FWRD and meme != event.chat_id:
                     await event.client.send_file(
-                        "random_mememe",
+                        meme,
                         media_list,
-                        caption=f"**{details[0]}**",
+                        caption=f"__{details[0]}__",
                     )
                 return await delete_conv(event, v1, v1_flag)
         except asyncio.TimeoutError:
@@ -109,8 +110,8 @@ async def insta_dl(event):
                 await event.client.send_file(
                     event.chat_id, media_list, reply_to=event.reply_to_msg_id
                 )
-                if FWRD:
-                    await event.client.send_file("random_mememe", media_list)
+                if FWRD and meme != event.chat_id:
+                    await event.client.send_file(meme, media_list, caption=f"__{link}__")
             else:
                 await event.eor(
                     f"**#ERROR\nv1 :** __Not valid URL__\n\n**v2 :**__ {media.text}__",

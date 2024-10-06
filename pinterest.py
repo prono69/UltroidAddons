@@ -97,7 +97,7 @@ async def pinterest_search(event):
                 await event.client.send_file(
                     event.chat_id,
                     file=media_group,
-                    caption=f"__Search results for {query}__",
+                    caption=f"__{num_pics} Search results for {query}__",
                     reply_to=event.reply_to_msg_id
                 )
                 os.remove(filename)
