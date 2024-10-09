@@ -8,10 +8,12 @@
 import os
 import platform
 import sys
+
 import psutil
-from pyUltroid.version import __version__ as UltVer
 from pyUltroid.fns.helper import humanbytes
+from pyUltroid.version import __version__ as UltVer
 from telethon import __version__ as TelethonVer
+
 
 def find_lib_version(lib: str) -> str:
     """Find the version of a Python library installed via pip."""
@@ -37,7 +39,15 @@ def get_system_info():
         ram_percent = psutil.virtual_memory().percent or "n/a"
         kernel = escape_html(platform.release())
         architecture = escape_html(platform.architecture()[0])
-        return cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, kernel, architecture
+        return (
+            cpu_cores,
+            cpu_percent,
+            ram_used,
+            ram_total,
+            ram_percent,
+            kernel,
+            architecture,
+        )
     except Exception:
         return ["n/a"] * 7
 
@@ -87,11 +97,13 @@ INFO_TEMPLATE = (
 async def serverinfo_cmd(message):
     """server information."""
     await message.edit("<b><i>🔄 Getting server info...</i></b>", parse_mode="html")
-    
-    cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, kernel, architecture = get_system_info()
+
+    cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, kernel, architecture = (
+        get_system_info()
+    )
     os_info = get_os_info()
     python_version, pip_version = get_python_info()
-    
+
     telethon_version = TelethonVer
     aiohttp_version = find_lib_version("aiohttp")
     gitpython_version = find_lib_version("GitPython")
@@ -99,9 +111,20 @@ async def serverinfo_cmd(message):
 
     # Format the final text
     info_text = INFO_TEMPLATE.format(
-        cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, 
-        kernel, architecture, os_info, telethon_version, aiohttp_version, 
-        gitpython_version, pyultroid_version, python_version, pip_version
+        cpu_cores,
+        cpu_percent,
+        ram_used,
+        ram_total,
+        ram_percent,
+        kernel,
+        architecture,
+        os_info,
+        telethon_version,
+        aiohttp_version,
+        gitpython_version,
+        pyultroid_version,
+        python_version,
+        pip_version,
     )
-    
+
     await message.eor(info_text, parse_mode="html")
