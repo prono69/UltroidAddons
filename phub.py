@@ -206,10 +206,11 @@ async def corn(event):
         output = output.decode("utf-8").split("\n")
 
         attribs = await set_attributes(output_file)
+        file_path, _ = await event.client.fast_uploader(output_file, show_progress=True, event=event, to_delete=False)
 
         await event.client.send_file(
             event.chat_id,
-            output_file,
+            file_path,
             caption="Here is your video! 😈",
             supports_streaming=True,
             attributes=attribs,
