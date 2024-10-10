@@ -42,7 +42,11 @@ async def send_song(e, url, duration, title, performer, eris):
                     )
                 ]
                 await e.client.send_file(
-                    e.chat_id, filename, attributes=attributes, caption=title, reply_to=e.reply_to_msg_id
+                    e.chat_id,
+                    filename,
+                    attributes=attributes,
+                    caption=title,
+                    reply_to=e.reply_to_msg_id,
                 )
                 os.remove(filename)
                 await asyncio.sleep(1)  # Wait for 1 second
