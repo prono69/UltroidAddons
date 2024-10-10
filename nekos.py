@@ -1,6 +1,7 @@
 from pyUltroid.fns import nsfw as useless
 from pyUltroid.fns.misc import unsavegif
 
+
 @ultroid_cmd(pattern="ne ?(.*)")
 async def neko(event):
     "Search images from nekos"
@@ -15,13 +16,16 @@ async def neko(event):
         target = useless.nekos(choose)
         await catevent.delete()
         nohorny = await event.client.send_file(
-            event.chat_id, file=target, caption=f"__{choose}__", reply_to=event.reply_to_msg_id
+            event.chat_id,
+            file=target,
+            caption=f"__{choose}__",
+            reply_to=event.reply_to_msg_id,
         )
 
     except Exception as e:
         await event.eor(f"`{e}`", 5)
-        
+
     try:
-    	await unsavegif(event, nohorny)
+        await unsavegif(event, nohorny)
     except Exception:
-    	pass
+        pass
