@@ -71,7 +71,7 @@ async def insta_dl(event):
                 await event.client.send_file(
                     event.chat_id,
                     media_list,
-                    caption=f"**{details[0]}**",
+                    caption=f"__{details[0]}__",
                     reply_to=event.reply_to_msg_id,
                 )
                 if FWRD and meme != event.chat_id:

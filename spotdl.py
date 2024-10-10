@@ -59,7 +59,7 @@ async def send_song_link(e, track_name):
     if not track_name:
         return await e.eor("__Give a song name as well vro...__", 5)
 
-    eris = await e.eor(f"___Requesting {track_name}... From Spotify___")
+    eris = await e.eor(f"__Requesting {track_name}... From Spotify__")
 
     if track_name.startswith("https://open.spotify.com/track"):
         results = spotify.track(track_name)

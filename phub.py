@@ -25,7 +25,7 @@ import logging
 from pyUltroid.fns.tools import metadata
 from telethon.tl.types import DocumentAttributeFilename, DocumentAttributeVideo
 
-from RyuzakiLib import PornoHub
+from pyUltroid.fns.nsfw import PornoHub
 
 LOGS = logging.getLogger(__name__)
 
