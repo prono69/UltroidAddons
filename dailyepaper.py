@@ -5,12 +5,12 @@
     __Get daily news paper (english only).__
 """
 
+import asyncio
 import datetime
 import re
-import aiohttp
-import asyncio
-from bs4 import BeautifulSoup as bs
 
+import aiohttp
+from bs4 import BeautifulSoup as bs
 
 now = datetime.datetime.now()
 current_month = now.strftime("%b").lower()
@@ -55,12 +55,16 @@ async def scrape_data(msg):
 
                 if title and drive_links:
                     await msg.eor(
-                        f"✅ Scraping from <b>{title}</b> was successful.", parse_mode="html"
+                        f"✅ Scraping from <b>{title}</b> was successful.",
+                        parse_mode="html",
                     )
                     text += f"<b>{title}</b> - {drive_links[0]}\n"
 
             except Exception as e:
-                await msg.eor(f"❌ Scraping from <b>{url}</b> was unsuccessful.", parse_mode="html")
+                await msg.eor(
+                    f"❌ Scraping from <b>{url}</b> was unsuccessful.",
+                    parse_mode="html",
+                )
                 errors += f"{url}: {repr(e)}\n\n"
             await asyncio.sleep(5)
     return text, errors
