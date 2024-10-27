@@ -111,7 +111,9 @@ async def insta_dl(event):
                     event.chat_id, media_list, reply_to=event.reply_to_msg_id
                 )
                 if FWRD and meme != event.chat_id:
-                    await event.client.send_file(meme, media_list, caption=f"__{link}__")
+                    await event.client.send_file(
+                        meme, media_list, caption=f"__{link}__"
+                    )
             else:
                 await event.eor(
                     f"**#ERROR\nv1 :** __Not valid URL__\n\n**v2 :**__ {media.text}__",
