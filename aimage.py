@@ -71,7 +71,8 @@ async def getai(event):
         img = PIL.Image.open(base_img)
 
         # Call the model to generate content with safety settings
-        response_ = model.generate_content(img)
+        prompt = "Get details of given image, be as accurate as possible."
+        response_ = model.generate_content([prompt, img])
 
         # Extract and parse the text content
         text_content = response_.candidates[0].content.parts[0].text
