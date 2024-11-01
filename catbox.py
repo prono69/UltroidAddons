@@ -29,6 +29,22 @@ def upload_to_envs(file_path):
         else:
             return f"Error: {response.status_code} - {response.text}"
             
+
+def upload_to_qu(file_path, url="https://qu.ax/upload.php"):
+    files = {'files[]': open(file_path, 'rb')}
+    response = requests.post(url, files=files)
+    
+    # Check if the response is in JSON format
+    try:
+        response_json = response.json()
+        file_url = response_json.get('files', [{}])[0].get('url', 'URL not found')
+        return file_url
+    except ValueError:
+        print("Response is not in JSON format")
+
+    return None
+
+            
 @ultroid_cmd(pattern="catb ?(.*)$")
 async def handler(event):
     reply = await event.get_reply_message()
@@ -40,6 +56,9 @@ async def handler(event):
         if flag == "e":
             upload_link = upload_to_envs(file_path)
             server = "Envs"
+        elif flag == "q":
+        	upload_link = upload_to_qu(file_path)
+        	server = "Qu"
         else:
             upload_link = uploader.upload_file(file_path)
             server = "Catbox"
@@ -51,4 +70,4 @@ async def handler(event):
         
         os.remove(file_path)  # Clean up
     else:
-        await eod(event, "__Please send a file along with the command.__")
+        await event.eor("__Please send a file along with the command.__", 5)
