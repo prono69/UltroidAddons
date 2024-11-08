@@ -54,10 +54,11 @@ model_cook = genai.GenerativeModel(
 )
 
 
-@ultroid_cmd(pattern="getai$")
+@ultroid_cmd(pattern="getai ?(.*)")
 async def getai(event):
     try:
         kk = await event.eor("`Please Wait...`")
+        input_ = event.pattern_match.group(1)
         base = await event.get_reply_message()
 
         # Check if the base message has media
@@ -71,7 +72,10 @@ async def getai(event):
         img = PIL.Image.open(base_img)
 
         # Call the model to generate content with safety settings
-        prompt = "Get details of given image, be as accurate as possible."
+        if input_:
+        	prompt = input_
+        else:
+        	promt = "Get details of given image, be as accurate as possible."
         response_ = model.generate_content([prompt, img])
 
         # Extract and parse the text content
@@ -87,7 +91,7 @@ async def getai(event):
         )
 
         # Edit the message with the response
-        await kk.edit(f"**Details Of Image:** \n__{response}__")
+        await kk.edit(f"**Details Of Image:** \n\n__{response}__")
 
     except Exception as e:
         # Handle any errors and send an error message
