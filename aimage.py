@@ -73,9 +73,9 @@ async def getai(event):
 
         # Call the model to generate content with safety settings
         if input_:
-        	prompt = input_
+            prompt = input_
         else:
-        	promt = "Get details of given image, be as accurate as possible."
+            promt = "Get details of given image, be as accurate as possible."
         response_ = model.generate_content([prompt, img])
 
         # Extract and parse the text content
