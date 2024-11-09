@@ -60,49 +60,36 @@ async def getai(event):
         kk = await event.eor("`Please Wait...`")
         input_ = event.pattern_match.group(1)
         base = await event.get_reply_message()
-
-        # Check if the base message has media
+        
         if not base or not base.media:
-            await kk.edit("Please reply to an image.")
+            await event.eor("`Please reply to an image.`", 5)
             return
 
         base_img = await base.download_media()
-
-        # Open the downloaded image
         img = PIL.Image.open(base_img)
-
-        # Call the model to generate content with safety settings
+        
         if input_:
         	prompt = input_
         else:
-        	promt = "Get details of given image, be as accurate as possible."
+        	prompt = "Get details of given image, be as accurate as possible."
         response_ = model.generate_content([prompt, img])
-
-        # Extract and parse the text content
+        
         text_content = response_.candidates[0].content.parts[0].text
         parsed_content = json.loads(text_content)
 
-        # Safely get the description or error message
-        response = (
-            parsed_content.get("description")
-            or parsed_content.get("image_description")
-            or parsed_content.get("caption")
-            or parsed_content.get("error")
-        )
-
-        # Edit the message with the response
+        # Safely get the first available description-like content
+        response = next((value for key, value in parsed_content.items() if value), "No description available.")
+        
         await kk.edit(f"**Details Of Image:** \n\n__{response}__")
 
     except Exception as e:
-        # Handle any errors and send an error message
-        await eod(event, f"An error occurred: {e}")
+        await eod(event, f"An error occurred: `{e}`")
 
     finally:
-        # Ensure the downloaded image is removed
         if os.path.exists(base_img):
             os.remove(base_img)
 
-
+            
 @ultroid_cmd(pattern="aicook$")
 async def aicook(event):
     if event.get_reply_message():
