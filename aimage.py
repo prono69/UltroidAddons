@@ -60,26 +60,29 @@ async def getai(event):
         kk = await event.eor("`Please Wait...`")
         input_ = event.pattern_match.group(1)
         base = await event.get_reply_message()
-        
+
         if not base or not base.media:
             await event.eor("`Please reply to an image.`", 5)
             return
 
         base_img = await base.download_media()
         img = PIL.Image.open(base_img)
-        
+
         if input_:
-        	prompt = input_
+            prompt = input_
         else:
-        	prompt = "Get details of given image, be as accurate as possible."
+            prompt = "Get details of given image, be as accurate as possible."
         response_ = model.generate_content([prompt, img])
-        
+
         text_content = response_.candidates[0].content.parts[0].text
         parsed_content = json.loads(text_content)
 
         # Safely get the first available description-like content
-        response = next((value for key, value in parsed_content.items() if value), "No description available.")
-        
+        response = next(
+            (value for key, value in parsed_content.items() if value),
+            "No description available.",
+        )
+
         await kk.edit(f"**Details Of Image:** \n\n__{response}__")
 
     except Exception as e:
@@ -89,7 +92,7 @@ async def getai(event):
         if os.path.exists(base_img):
             os.remove(base_img)
 
-            
+
 @ultroid_cmd(pattern="aicook$")
 async def aicook(event):
     if event.get_reply_message():
