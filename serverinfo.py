@@ -124,7 +124,7 @@ async def serverinfo_cmd(message):
     # Format the final text
     info_text = INFO_TEMPLATE.format(
         cpu_cores, cpu_percent, ram_used, ram_total, ram_percent,
-        disk_used, disk_total, disk_percent, up, down, total
+        disk_used, disk_total, disk_percent, up, down, total,
         kernel, architecture, os_info, telethon_version, aiohttp_version, 
         gitpython_version, pyultroid_version, python_version, pip_version
     )
