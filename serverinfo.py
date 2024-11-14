@@ -35,11 +35,14 @@ def get_system_info():
         ram_used = humanbytes(psutil.virtual_memory().used)
         ram_total = humanbytes(psutil.virtual_memory().total)
         ram_percent = psutil.virtual_memory().percent or "n/a"
+        disk_used = humanbytes(psutil.disk_usage("/").used)
+        disk_total = humanbytes(psutil.disk_usage("/").total)
+        disk_percent = humanbytes(psutil.disk_usage("/").percent) or "n/a"
         kernel = escape_html(platform.release())
         architecture = escape_html(platform.architecture()[0])
-        return cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, kernel, architecture
+        return cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, disk_used, disk_total, disk_percent, kernel, architecture
     except Exception:
-        return ["n/a"] * 7
+        return ["n/a"] * 10
 
 
 def get_os_info():
@@ -62,6 +65,21 @@ def get_python_info():
     except Exception:
         return "n/a", "n/a"
 
+        
+def bandwidth():
+	try:
+		download = 0
+		upload = 0
+		for net_io in psutil.net_io_counters(pernic=True).values():
+			download += net_io.bytes_recv
+			upload += net_io.bytes_sent
+		up = humanbytes(upload)
+		down = humanbytes(download)
+		total = humanbytes(upload + download)
+		return up, down, total
+	except:
+	       return ["N/A"] * 3
+        
 
 # Text template for displaying server info
 INFO_TEMPLATE = (
@@ -69,6 +87,11 @@ INFO_TEMPLATE = (
     "<u>🗄 Used resources:</u>\n"
     "    CPU: {} Cores ({}%)\n"
     "    RAM: {} / {} ({}%)\n\n"
+    "    DISK: {} / {} ({}%)\n\n"
+    "<u>🌐 Network Stats:</u>\n"
+    "    Upload: {}\n"
+    "    Download: {}\n"
+    "    Total: {}\n"
     "<u>🧾 Dist info:</u>\n"
     "    Kernel: {}\n"
     "    Arch: {}\n"
@@ -88,9 +111,10 @@ async def serverinfo_cmd(message):
     """server information."""
     await message.edit("<b><i>🔄 Getting server info...</i></b>", parse_mode="html")
     
-    cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, kernel, architecture = get_system_info()
+    cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, disk_used, disk_total, disk_percent, kernel, architecture = get_system_info()
     os_info = get_os_info()
     python_version, pip_version = get_python_info()
+    up, down, total = bandwidth()
     
     telethon_version = TelethonVer
     aiohttp_version = find_lib_version("aiohttp")
@@ -99,7 +123,8 @@ async def serverinfo_cmd(message):
 
     # Format the final text
     info_text = INFO_TEMPLATE.format(
-        cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, 
+        cpu_cores, cpu_percent, ram_used, ram_total, ram_percent,
+        disk_used, disk_total, disk_percent, up, down, total
         kernel, architecture, os_info, telethon_version, aiohttp_version, 
         gitpython_version, pyultroid_version, python_version, pip_version
     )

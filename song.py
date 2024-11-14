@@ -42,29 +42,39 @@ from . import *
 # API URLs
 BASE_URL = "https://deliriusapi-official.vercel.app"
 URL = f"{BASE_URL}/ia"
+NEX_API = udB.get_key("NEX_API")
 
 
-async def search_music(api_url, format_function, message, query):
+import requests
+
+async def search_music(api_url, format_function, message, query, params=None):
     await message.eor("__Searching...__")
     url = f"{api_url}{query}"
-    response = requests.get(url)
- 
-    if response.status_code == 200:
-        try:
-            data = response.json()  # Directly get the JSON data
- 
-            if isinstance(data, list):
-                result = format_function(data)
-            elif isinstance(data, dict) and "data" in data:
-                result = format_function(data["data"])
-            else:
-                result = "No data found or unexpected format."
- 
-            await message.edit(result, parse_mode="md")
-        except (ValueError, KeyError, TypeError) as e:
-            await message.edit(f"An error occurred while processing the data: {str(e)}")
-    else:
-        await message.edit("An error occurred, please try again later.")
+    
+    if params is None:
+        params = {}
+    
+    try:
+        response = requests.get(url, params=params)
+        # Check if the response was successful
+        if response.status_code == 200:
+            try:
+                data = response.json()
+                
+                if isinstance(data, list):
+                    result = format_function(data)
+                elif isinstance(data, dict) and "data" in data:
+                    result = format_function(data["data"])
+                else:
+                    result = "No data found or unexpected format."
+                
+                await message.edit(result, parse_mode="md")
+            except (ValueError, KeyError, TypeError) as e:
+                await message.edit(f"An error occurred while processing the data: {str(e)}")
+        else:
+            await message.edit(f"API returned an error: {response.status_code}")
+    except requests.exceptions.RequestException as e:
+        await message.edit(f"Failed to connect to the API: {str(e)}")
 
         
 def format_lyrics_result(data):
@@ -73,12 +83,12 @@ def format_lyrics_result(data):
 def format_spotify_result(data):
     result = ""
     for item in data[:15]:  # Limit to 15 results
-        result += f"🎵 **{item['title']}** by {item['artist']}\n"
-        result += f"Album: {item['album']}\n"
+        result += f"🎵 **{item['trackName']}** by {item['artistName']}\n"
+        result += f"Album: {item['albumName']}\n"
         result += f"Duration: {item['duration']}\n"
-        result += f"Popularity: {item['popularity']}\n"
-        result += f"Publish Date: {item['publish']}\n"
-        result += f"[Listen on Spotify]({item['url']})\n\n"
+        # result += f"Popularity: {item['popularity']}\n"
+        # result += f"Publish Date: {item['publish']}\n"
+        result += f"[Listen on Spotify]({item['externalUrl']})\n\n"
     return result
     
     
@@ -200,7 +210,7 @@ async def spotify_search(message):
         await message.eor("Usage: spot <query>", 7)
         return
     await search_music(
-        f"{BASE_URL}/search/spotify?q=", format_spotify_result, message, query
+        f"https://api.agatz.xyz/api/spotify?message=", format_spotify_result, message, query
     )
     
 
@@ -213,6 +223,6 @@ async def applemusic_search(message):
 	       await message.eor("Usage: applm <query>", 7)
 	       return
 	await search_music(
-        f"{BASE_URL}/search/applemusicv2?query=", format_apple_music_result, message, query
+        f"https://api.nexoracle.com/search/itunes?q=", format_apple_music_result, message, query
     )
     
