@@ -8,10 +8,12 @@
 import os
 import platform
 import sys
+
 import psutil
-from pyUltroid.version import __version__ as UltVer
 from pyUltroid.fns.helper import humanbytes
+from pyUltroid.version import __version__ as UltVer
 from telethon import __version__ as TelethonVer
+
 
 def find_lib_version(lib: str) -> str:
     """Find the version of a Python library installed via pip."""
@@ -40,7 +42,18 @@ def get_system_info():
         disk_percent = humanbytes(psutil.disk_usage("/").percent) or "n/a"
         kernel = escape_html(platform.release())
         architecture = escape_html(platform.architecture()[0])
-        return cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, disk_used, disk_total, disk_percent, kernel, architecture
+        return (
+            cpu_cores,
+            cpu_percent,
+            ram_used,
+            ram_total,
+            ram_percent,
+            disk_used,
+            disk_total,
+            disk_percent,
+            kernel,
+            architecture,
+        )
     except Exception:
         return ["n/a"] * 10
 
@@ -65,21 +78,21 @@ def get_python_info():
     except Exception:
         return "n/a", "n/a"
 
-        
+
 def bandwidth():
-	try:
-		download = 0
-		upload = 0
-		for net_io in psutil.net_io_counters(pernic=True).values():
-			download += net_io.bytes_recv
-			upload += net_io.bytes_sent
-		up = humanbytes(upload)
-		down = humanbytes(download)
-		total = humanbytes(upload + download)
-		return up, down, total
-	except:
-	       return ["N/A"] * 3
-        
+    try:
+        download = 0
+        upload = 0
+        for net_io in psutil.net_io_counters(pernic=True).values():
+            download += net_io.bytes_recv
+            upload += net_io.bytes_sent
+        up = humanbytes(upload)
+        down = humanbytes(download)
+        total = humanbytes(upload + download)
+        return up, down, total
+    except:
+        return ["N/A"] * 3
+
 
 # Text template for displaying server info
 INFO_TEMPLATE = (
@@ -110,12 +123,23 @@ INFO_TEMPLATE = (
 async def serverinfo_cmd(message):
     """server information."""
     await message.edit("<b><i>🔄 Getting server info...</i></b>", parse_mode="html")
-    
-    cpu_cores, cpu_percent, ram_used, ram_total, ram_percent, disk_used, disk_total, disk_percent, kernel, architecture = get_system_info()
+
+    (
+        cpu_cores,
+        cpu_percent,
+        ram_used,
+        ram_total,
+        ram_percent,
+        disk_used,
+        disk_total,
+        disk_percent,
+        kernel,
+        architecture,
+    ) = get_system_info()
     os_info = get_os_info()
     python_version, pip_version = get_python_info()
     up, down, total = bandwidth()
-    
+
     telethon_version = TelethonVer
     aiohttp_version = find_lib_version("aiohttp")
     gitpython_version = find_lib_version("GitPython")
@@ -123,10 +147,26 @@ async def serverinfo_cmd(message):
 
     # Format the final text
     info_text = INFO_TEMPLATE.format(
-        cpu_cores, cpu_percent, ram_used, ram_total, ram_percent,
-        disk_used, disk_total, disk_percent, up, down, total,
-        kernel, architecture, os_info, telethon_version, aiohttp_version, 
-        gitpython_version, pyultroid_version, python_version, pip_version
+        cpu_cores,
+        cpu_percent,
+        ram_used,
+        ram_total,
+        ram_percent,
+        disk_used,
+        disk_total,
+        disk_percent,
+        up,
+        down,
+        total,
+        kernel,
+        architecture,
+        os_info,
+        telethon_version,
+        aiohttp_version,
+        gitpython_version,
+        pyultroid_version,
+        python_version,
+        pip_version,
     )
-    
+
     await message.eor(info_text, parse_mode="html")

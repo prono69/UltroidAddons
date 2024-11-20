@@ -1,14 +1,16 @@
 """
 ❍ Commands Available -
- 
+
 • `{i}trand <country name>`
     __Get X(Twitter) trends from given country.__
-    
+
 """
 
-from bs4 import BeautifulSoup
-import aiohttp
 import random
+
+import aiohttp
+from bs4 import BeautifulSoup
+
 
 # Function to get a random user agent (optional but recommended)
 def get_ua():
@@ -19,6 +21,7 @@ def get_ua():
     ]
     return random.choice(user_agents)
 
+
 # Define the function to get trending hashtags
 async def get_trendings(country):
     base_url = "https://getdaytrends.com"
@@ -27,7 +30,7 @@ async def get_trendings(country):
     else:
         url = base_url
     headers = {"user-agent": get_ua()}
- 
+
     def get_result(data):
         tags = data.table.find_all("tr")
         results = []
@@ -37,7 +40,7 @@ async def get_trendings(country):
             link = base_url + src.a.get("href")
             results.append({"title": title, "url": link})
         return results
- 
+
     async with aiohttp.ClientSession() as session:
         try:
             async with session.get(url, headers=headers) as response:
@@ -55,33 +58,31 @@ async def get_trendings(country):
             return {"error": str(e)}
 
 
-
 @ultroid_cmd(pattern="trand ?(.*)")
 async def trend_command(message):
     country = message.pattern_match.group(1)
-    
-    await message.eor("**Getting X(Twitter) Trends...**")	
+
+    await message.eor("**Getting X(Twitter) Trends...**")
     trends = await get_trendings(country)
-    
-    if 'error' in trends:
+
+    if "error" in trends:
         await message.eor(f"Error: {trends['error']}", 7)
         return
-        
+
     response = (
         f"**Trending Hashtags {country.upper() if country else 'Worldwide'}**\n\n"
     )
-    
+
     response += "**Now Trending:**\n"
-    for tag in trends['now_hashtags']:
+    for tag in trends["now_hashtags"]:
         response += f"- [{tag['title']}]({tag['url']})\n"
 
     response += "\n**Today Trending:**\n"
-    for tag in trends['today_hashtags']:
+    for tag in trends["today_hashtags"]:
         response += f"- [{tag['title']}]({tag['url']})\n"
 
     response += "\n**Top Hashtags:**\n"
-    for tag in trends['top_hashtags']:
+    for tag in trends["top_hashtags"]:
         response += f"- [{tag['title']}]({tag['url']})\n"
 
     await message.eor(response, link_preview=False)
-
