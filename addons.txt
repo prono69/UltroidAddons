@@ -2,10 +2,11 @@ emoji
 fonttools
 gtts
 # gingerit
+google-generativeai
 jikanpy
 git+https://github.com/xathon/LyricsGenius.git
 git+https://github.com/ufoptg/drawHub.git
-git+https://github.com/payel-otaku/RyuzakiLib.git
+# git+https://github.com/payel-otaku/RyuzakiLib.git
 pokedex.py
 pyfiglet
 pygments
