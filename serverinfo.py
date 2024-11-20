@@ -48,12 +48,12 @@ def get_system_info():
 def get_os_info():
     """Get operating system distribution information."""
     try:
-        system_info = os.popen("cat /etc/*release").read()
-        start = system_info.find('DISTRIB_DESCRIPTION="') + 21
-        end = system_info.find('"', start)
-        return escape_html(system_info[start:end]) if start and end > 0 else "n/a"
+        system = os.popen("cat /etc/*release").read()
+        b = system[system.find("PRETTY_NAME=") + 13 : -1]
+        system = b[: b.find('"')]
+        return escape_html(system)
     except Exception:
-        return "n/a"
+        return "N/A"
 
 
 def get_python_info():
