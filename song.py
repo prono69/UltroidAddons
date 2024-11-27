@@ -40,7 +40,7 @@ from pyUltroid.fns.tools import post_to_telegraph
 from . import *
 
 # API URLs
-BASE_URL = "https://deliriusapi-official.vercel.app"
+BASE_URL = "https://deliriussapi-oficial.vercel.app"
 URL = f"{BASE_URL}/ia"
 NEX_API = udB.get_key("NEX_API")
 
@@ -83,12 +83,12 @@ def format_lyrics_result(data):
 def format_spotify_result(data):
     result = ""
     for item in data[:15]:  # Limit to 15 results
-        result += f"🎵 **{item['trackName']}** by {item['artistName']}\n"
-        result += f"Album: {item['albumName']}\n"
+        result += f"🎵 **{item['title']}** by {item['artist']}\n"
+        result += f"Album: {item['album']}\n"
         result += f"Duration: {item['duration']}\n"
-        # result += f"Popularity: {item['popularity']}\n"
-        # result += f"Publish Date: {item['publish']}\n"
-        result += f"[Listen on Spotify]({item['externalUrl']})\n\n"
+        result += f"Popularity: {item['popularity']}\n"
+        result += f"Publish Date: {item['publish']}\n"
+        result += f"[Listen on Spotify]({item['url']})\n\n"
     return result
     
     
@@ -102,6 +102,16 @@ def format_apple_music_result(data):
         result += f"🎵 **{title}** by {artists}\n"
         result += f"Type: {music_type}\n"
         result += f"[Listen on Apple Music]({url})\n\n"
+    return result
+    
+    
+def format_deezer_result(data):
+    result = ""
+    for item in data[:15]:  # Limit to 15 results
+        result += f"🎵 **{item['title']}** by {item['artist']}\n"
+        result += f"Duration: {item['duration']}\n"
+        result += f"Rank: {item['rank']}\n"
+        result += f"[Listen on Deezer]({item['url']})\n\n"
     return result
  
     
@@ -210,7 +220,7 @@ async def spotify_search(message):
         await message.eor("Usage: spot <query>", 7)
         return
     await search_music(
-        f"https://api.agatz.xyz/api/spotify?message=", format_spotify_result, message, query
+        f"{BASE_URL}/search/spotify?q=", format_spotify_result, message, query
     )
     
 
@@ -223,6 +233,19 @@ async def applemusic_search(message):
 	       await message.eor("Usage: applm <query>", 7)
 	       return
 	await search_music(
-        f"https://api.nexoracle.com/search/itunes?q=", format_apple_music_result, message, query
+        f"{BASE_URL}/search/applemusic?text=", format_apple_music_result, message, query
+    )
+    
+    
+@ultroid_cmd(pattern="deezer ?(.*)$")
+async def deezer_search(message):
+	input = message.pattern_match.group(1)
+	reply = await message.get_reply_message()
+	query = (input if input else reply.text)
+	if not query:
+	       await message.eor("Usage: applm <query>", 7)
+	       return
+    await search_music(
+        f"{BASE_URL}/search/deezer?q=", format_deezer_result, message, query
     )
     

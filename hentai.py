@@ -15,10 +15,11 @@ import requests
 async def hentai_trend(event):
     kk = await event.eor("__Fetching top trending hentai of the week...__")
     try:
-        res = requests.get("https://api.guruapi.tech/hanime/trend")
+        res = requests.get("https://xyz69-hanime-api.hf.space/trending/week")
         res.raise_for_status()
 
-        json_data = res.json()
+        json_data_ = res.json()
+        json_data = json_data_.get("results")
 
         if not json_data or len(json_data) == 0:
             return await kk.edit("No data found", time=5)

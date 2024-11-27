@@ -1,3 +1,4 @@
+aiofiles
 emoji
 fonttools
 gtts
@@ -20,5 +21,6 @@ speedtest-cli
 spotipy
 textblob
 wikipedia
+wget
 https://github.com/ufoptg/google_trans_new/archive/refs/tags/1.2.0.zip
 markdownify
