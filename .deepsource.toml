@@ -13,10 +13,4 @@ name = "isort"
 name = "black"
 
 [[transformers]]
-name = "yapf"
-
-[[transformers]]
 name = "ruff"
-
-[[transformers]]
-name = "autopep8"
