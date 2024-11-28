@@ -29,8 +29,8 @@ def run(model, inputs):
 async def cfai(e):
     query = e.pattern_match.group(1)
     if not query and event.is_reply:
-    	reply = await e.get_reply_message()
-    	query = reply.text
+        reply = await e.get_reply_message()
+        query = reply.text
     if not query:
         return await e.eor("`Please provide a query to the command.`", 5)
 

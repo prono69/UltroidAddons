@@ -9,13 +9,14 @@ import requests
 
 API_BASE_URL = "https://ifsc.razorpay.com/"
 
+
 @ultroid_cmd(pattern="ifsc ?(.*)$")
 async def fetch_ifsc_details(m):
     try:
         ifsc_code = m.pattern_match.group(1)
         reply = await m.get_reply_message()
         if not ifsc_code and m.is_reply:
-        	isfc_code = reply.text
+            isfc_code = reply.text
         kk_ = await m.edit("`Getting IFSC information...`")
         response = requests.get(f"{API_BASE_URL}{ifsc_code}")
         response.raise_for_status()
@@ -45,5 +46,3 @@ async def fetch_ifsc_details(m):
         await m.eor("Please provide valid IFSC Code", 5)
     except IndexError:
         await m.eor("Please provide an IFSC Code", 5)
-
-        

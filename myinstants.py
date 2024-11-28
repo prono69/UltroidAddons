@@ -2,15 +2,17 @@
 """
 > {i}rc (query)
 
-• Examples: 
+• Examples:
 > {i}rc john cena
 
 """
 
-import requests
 import os
 import re
+
+import requests
 from bs4 import BeautifulSoup
+
 
 @ultroid_cmd(pattern="rc (.+)")
 async def rc_cmd(event):
@@ -23,27 +25,34 @@ async def rc_cmd(event):
     }
 
     response = requests.get(url, headers=headers)
-    soup = BeautifulSoup(response.content, 'html.parser')
+    soup = BeautifulSoup(response.content, "html.parser")
 
-    button_tags = soup.find_all('button', class_='small-button', onclick=re.compile(r"play\('(.+?)',"))
+    button_tags = soup.find_all(
+        "button", class_="small-button", onclick=re.compile(r"play\('(.+?)',")
+    )
 
     for button_tag in button_tags:
-        data_src = button_tag['onclick']
+        data_src = button_tag["onclick"]
         match = re.search(r"play\('(.+?)',", data_src)
 
         if match:
             mp3_path = match.group(1)
-            title_tag = button_tag.find_next('div', class_='title')
+            title_tag = button_tag.find_next("div", class_="title")
             title = title_tag.text.strip() if title_tag else "Unknown Title"
 
             audio_url = f"https://www.myinstants.com{mp3_path}"
             audio_response = requests.get(audio_url, headers=headers, cookies={})
 
-            mp3_filename = f"{mp3_path.replace('/', '_')}.mp3"  
+            mp3_filename = f"{mp3_path.replace('/', '_')}.mp3"
             with open(mp3_filename, "wb") as audio_file:
                 audio_file.write(audio_response.content)
 
-            await event.client.send_file(event.chat_id, mp3_filename, reply_to=event.reply_to_msg_id, voice_note=True)
+            await event.client.send_file(
+                event.chat_id,
+                mp3_filename,
+                reply_to=event.reply_to_msg_id,
+                voice_note=True,
+            )
             await event.delete()
             os.remove(mp3_filename)
             break

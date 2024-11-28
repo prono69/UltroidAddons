@@ -50,7 +50,11 @@ async def girls(event):
         await kk_.delete()
 
     except requests.exceptions.RequestException:
-        await event.client.send_file(event.chat_id, file="https://http.cat/503.jpg", reply_to=event.reply_to_msg_id)
+        await event.client.send_file(
+            event.chat_id,
+            file="https://http.cat/503.jpg",
+            reply_to=event.reply_to_msg_id,
+        )
 
 
 @ultroid_cmd(pattern="ngal ?(.*)$")
@@ -130,4 +134,8 @@ async def girls(event):
         await kk_.delete()
 
     except requests.exceptions.RequestException:
-        await event.client.send_file(event.chat_id, file="https://http.cat/503.jpg", reply_to=event.reply_to_msg_id)
+        await event.client.send_file(
+            event.chat_id,
+            file="https://http.cat/503.jpg",
+            reply_to=event.reply_to_msg_id,
+        )

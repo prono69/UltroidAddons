@@ -7,24 +7,28 @@
     __Get details of a Instagram profile.__
 """
 
-import requests
 import io
+
+import requests
 
 
 @ultroid_cmd(pattern="igs ?(.*)$")
 async def instagram_stalk(event):
     query = event.pattern_match.group(1)
     reply = await event.get_reply_message()
-    
+
     if not query and event.is_reply:
         query = reply.text
     elif not query:
-        return await event.eor("Usage: `.igs <username>` or reply to a message containing the username.", time=5)
-        
+        return await event.eor(
+            "Usage: `.igs <username>` or reply to a message containing the username.",
+            time=5,
+        )
+
     query = query.replace("@", "").strip()
-    
+
     if query.startswith("https://www.instagram.com/"):
-    	query = query.split("/")[3].split("?")[0]
+        query = query.split("/")[3].split("?")[0]
 
     kk = await event.eor(f"__Fetching {query}'s Instagram profile...__")
 
@@ -39,16 +43,16 @@ async def instagram_stalk(event):
             profile_pic_content = requests.get(profile_pic_url).content
             profile_pic_stream = io.BytesIO(profile_pic_content)
             profile_pic_stream.name = "profile.jpg"
-            
-            about = data.get('biography', 'N/A')
-            followers = data.get('followers', 'N/A')
-            following = data.get('following', 'N/A')
-            full_name = data.get('full_name', 'N/A')
+
+            about = data.get("biography", "N/A")
+            followers = data.get("followers", "N/A")
+            following = data.get("following", "N/A")
+            full_name = data.get("full_name", "N/A")
             is_private = data.get("is_private", "N/A")
             is_verified = data.get("is_verified", "N/A")
-            posts = data.get('posts', 'N/A')
-            username = data.get('username', 'N/A')
-            ext_url = data.get('external_url', 'N/A')
+            posts = data.get("posts", "N/A")
+            username = data.get("username", "N/A")
+            ext_url = data.get("external_url", "N/A")
 
             # Construct the caption for the profile data
             caption = (
@@ -63,19 +67,17 @@ async def instagram_stalk(event):
                 f"**🍂 𝖥𝗈𝗅𝗅𝗈𝗐𝗂𝗇𝗀:** `{following}`\n"
                 f"**💬 𝖡𝗂𝗈:** `{about}`\n\n"
                 "**</> @Neko_Drive**"
-                
             )
-            
+
             await event.client.send_file(
                 event.chat_id,
                 profile_pic_stream,
                 caption=caption,
-                reply_to=event.reply_to_msg_id
+                reply_to=event.reply_to_msg_id,
             )
         else:
             await event.eor("`No data found for this Instagram user.`", time=5)
-            
+
         await kk.delete()
     else:
         await event.eor("`An error occurred, please try again later.`", time=5)
-        

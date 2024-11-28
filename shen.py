@@ -3,15 +3,18 @@
 
 • `{i}shen <count> <query>`
     __Get information about the Hentai.__
-    
+
 **>> Default count set to 1**
 """
 
-import requests
-from . import ultroid_cmd
 import asyncio
 
+import requests
+
+from . import ultroid_cmd
+
 API_URL = "https://xyz69-hanime.hf.space/search?query="
+
 
 def format_number(num):
     """Convert a large number into a shortened format."""
@@ -21,21 +24,25 @@ def format_number(num):
         return f"{num // 1_000}K"
     return str(num)
 
+
 def truncate_text(text: str, limit: int = 300) -> str:
     return text if len(text) <= limit else f"{text[:limit].rstrip()}..."
+
 
 @ultroid_cmd(pattern="shen ?([\d]*) ?(.*)")
 async def hanime_search(event):
     args = event.pattern_match.groups()
-    count = int(args[0]) if args[0].isdigit() else 1  # Default to 1 if no number is provided
+    count = (
+        int(args[0]) if args[0].isdigit() else 1
+    )  # Default to 1 if no number is provided
     query = args[1]
     if event.is_reply and not query:
-    	reply = await event.get_reply_message()
-    	query = reply.text
-    
+        reply = await event.get_reply_message()
+        query = reply.text
+
     if not query:
         return await event.eor("`Please provide a search query.`", 5)
-    
+
     msg = await event.eor(f"__🔍 Searching for {query}...__")
 
     try:
@@ -43,11 +50,11 @@ async def hanime_search(event):
         response = requests.get(API_URL + query)
         response.raise_for_status()
         data = response.json()
-        
+
         # Check if results exist
         if not data or "results" not in data or not data["results"]:
             return await event.eor("__No results found for your query.__", 5)
-        
+
         results = data["results"][:count]  # Limit results to the specified count
         messages = []
 
@@ -83,7 +90,7 @@ async def hanime_search(event):
 
             # Prepare the message
             messages.append({"file": cover_url, "caption": caption})
-        
+
         # Send the messages
         for message in messages:
             await event.client.send_file(
@@ -91,7 +98,7 @@ async def hanime_search(event):
                 file=message["file"],
                 caption=message["caption"],
                 parse_mode="html",
-                reply_to=event.reply_to_msg_id
+                reply_to=event.reply_to_msg_id,
             )
             await asyncio.sleep(1)
         await msg.delete()

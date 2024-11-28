@@ -12,19 +12,23 @@
 • `{i}darkai -c` Clear Chat History
 """
 
-import json
-import requests
-from collections import deque
-from . import ultroid_cmd, LOGS, run_async
 import base64
+import json
+from collections import deque
+
+import requests
+
+from . import LOGS, run_async, ultroid_cmd
 
 darkai_chat_history_SIZE = 80
 
 darkai_chat_history = deque(maxlen=darkai_chat_history_SIZE)
 
+
 def format_prompt(messages):
     """Format messages for the DarkAI API."""
     return "\n".join([f"{msg['role']}: {msg['content']}" for msg in messages])
+
 
 async def fetch_chat_response(prompt, model):
     """Interact with DarkAI API and retrieve a response."""
@@ -57,13 +61,16 @@ async def fetch_chat_response(prompt, model):
                         try:
                             parsed_data = json.loads(json_data)
                             if parsed_data.get("event") == "final-response":
-                                final_message = parsed_data.get("data", {}).get("message")
+                                final_message = parsed_data.get("data", {}).get(
+                                    "message"
+                                )
                         except json.JSONDecodeError:
                             LOGS.warning("Failed to decode JSON: %s", json_data)
         return final_message
     else:
         LOGS.warning("Error: %d - %s", response.status_code, response.text)
         return None
+
 
 @ultroid_cmd(pattern="darkai (.+)")
 async def darkai_chat(e):
@@ -78,7 +85,7 @@ async def darkai_chat(e):
 
     darkai_chat_history.append({"role": "user", "content": user_input})
     prompt = format_prompt(darkai_chat_history)
-    
+
     moi = await e.eor("Cᴏɴɴᴇᴄᴛɪɴɢ ᴛᴏ DᴀʀᴋAI…")
     try:
         response = await fetch_chat_response(prompt, "gpt-4o")

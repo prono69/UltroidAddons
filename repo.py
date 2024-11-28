@@ -1,5 +1,6 @@
-import re
 import os
+import re
+
 import requests
 
 
@@ -8,8 +9,8 @@ async def github_repo(message):
     try:
         repo_input = message.pattern_match.group(1)
         if message.is_reply and not repo_input:
-        	reply = await message.get_reply_message()
-        	repo_input = reply.text
+            reply = await message.get_reply_message()
+            repo_input = reply.text
         if not repo_input:
             await message.edit(
                 f"<b>Usage: </b><code>.repo [link/reply to link]</code>",
@@ -55,7 +56,7 @@ async def github_repo(message):
             with open(file_name, "wb") as file:
                 file.write(response.content)
             await message.client.send_file(
-            message.chat_id,
+                message.chat_id,
                 file_name,
                 caption=f"<b>Repository Name:</b> <a href='{repo_input}'>{repo_details['name']}</a>\n\n<b>Description:</b> <blockquote>{description}</blockquote>",
                 parse_mode="html",
