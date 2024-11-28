@@ -1,15 +1,15 @@
 """
 ❍ Commands Available -
- 
+
 • `{i}lastonline`
- 
+
 • `{i}seen <userid/name/reply>`
- 
+
   🌀 __@TrueSaiyan__ 🌀
 """
- 
+
 import html
- 
+
 import motor.motor_asyncio
 import pytz
 from telethon import events, types
@@ -21,47 +21,49 @@ from telethon.tl.types import (
     UserStatusOnline,
     UserStatusRecently,
 )
- 
+
 from . import *
- 
+
 if udB.get_key("MONg"):
     lastSeendB = udB.get_key("MONg")
 else:
-	lastSeendB = "mongodb+srv://LastSeenUlt:YKzBfhfjtObPfQLD@cluster0.iil65vg.mongodb.net/"
- 
+    lastSeendB = (
+        "mongodb+srv://LastSeenUlt:YKzBfhfjtObPfQLD@cluster0.iil65vg.mongodb.net/"
+    )
+
 # MongoDB client setup
 mongo_client = motor.motor_asyncio.AsyncIOMotorClient(lastSeendB)
 db = mongo_client["User_Status"]
 collection = db["user_data"]
- 
+
 # Define the UTC timezone and Perth timezone
 utc_tz = pytz.utc
 perth_tz = pytz.timezone("Asia/Kolkata")
- 
- 
+
+
 async def mention_user(user_id):
     entity = await ultroid_bot.get_entity(user_id)
     mention = get_display_name(entity)
     escaped_mention = html.escape(mention)
     permalink = f"<a href='tg://user?id={entity.id}'>{escaped_mention}</a>"
     return permalink
- 
- 
+
+
 async def get_group_members_last_online(event):
     group = await event.client.get_entity(event.chat_id)
     participants = await event.client(
         GetParticipantsRequest(group, ChannelParticipantsSearch(""), 0, 25, hash=0)
     )
- 
+
     users_currently_online = []
     users_last_online = []
     users_unknown_status = []
- 
+
     for user in participants.users:
         if isinstance(user, User) and not user.bot:
             user_status = user.status
             user_id = user.id
- 
+
             if isinstance(user_status, UserStatusOffline):
                 was_online_utc = user_status.was_online.replace(tzinfo=utc_tz)
                 users_last_online.append((was_online_utc, user))
@@ -79,17 +81,17 @@ async def get_group_members_last_online(event):
                         users_unknown_status.append(user)
                 else:
                     users_unknown_status.append(user)
- 
+
     users_last_online.sort(key=lambda x: x[0], reverse=True)
- 
+
     result = "<b>Last Online Times for Group Members:</b>\n\n"
- 
+
     for user in users_currently_online:
         mention_text = await mention_user(user.id)
         result += f"╭ User: {mention_text} (<code>{user.id}</code>)\n"
         result += f"⌬ Status: Currently online\n"
         result += "╰──────────────\n\n"
- 
+
     for last_online_time, user in users_last_online:
         mention_text = await mention_user(user.id)
         last_online_perth = last_online_time.astimezone(perth_tz)
@@ -97,16 +99,16 @@ async def get_group_members_last_online(event):
         result += f"╭ User: {mention_text} (<code>{user.id}</code>)\n"
         result += f"⌬ Last Online: {readable_time}\n"
         result += "╰──────────────\n\n"
- 
+
     for user in users_unknown_status:
         mention_text = await mention_user(user.id)
         result += f"╭ User: {mention_text} (<code>{user.id}</code>)\n"
         result += f"⌬ Status: Unknown or unsupported\n"
         result += "╰──────────────\n\n"
- 
+
     return result
- 
- 
+
+
 @ultroid_cmd(pattern="lastonline$", manager=True)
 async def _(event):
     xx = await event.eor(
@@ -117,15 +119,15 @@ async def _(event):
         await xx.edit(result, parse_mode="html")
     except Exception as er:
         await xx.edit(f"ERROR : {er}")
- 
- 
+
+
 async def get_user_last_online(event, user_id):
     user = await event.client.get_entity(user_id)
     mention_text = await mention_user(user.id)
- 
+
     if not user.bot:
         user_status = user.status
- 
+
         # Check the database for last seen data
         db_user = await collection.find_one({"user_id": user.id})
         if db_user:
@@ -133,7 +135,7 @@ async def get_user_last_online(event, user_id):
             current_username = db_user.get("username")
             last_online_db = db_user.get("last_online_time")
             previous_usernames = db_user.get("previous_usernames", [])
- 
+
             if isinstance(user_status, UserStatusOffline) or isinstance(
                 user_status, UserStatusRecently
             ):
@@ -172,7 +174,7 @@ async def get_user_last_online(event, user_id):
                             f"⌬ Last Online: <code>{readable_last_online}</code>\n"
                             f"⌬ Current Username: <code>@{current_username}</code>"
                         )
- 
+
                     if previous_usernames:
                         prev_usernames_text = ", @".join(previous_usernames)
                         return (
@@ -185,7 +187,7 @@ async def get_user_last_online(event, user_id):
                         f"⌬ Last Online: <code>{readable_last_online}</code>\n"
                         f"⌬ Current Username: <code>@{current_username}</code>"
                     )
- 
+
             elif isinstance(user_status, UserStatusOnline):
                 if previous_usernames:
                     prev_usernames_text = ", @".join(previous_usernames)
@@ -199,7 +201,7 @@ async def get_user_last_online(event, user_id):
                     f"⌬ Status: <code>Currently online</code>\n"
                     f"⌬ Current Username: <code>@{current_username}</code>"
                 )
- 
+
             else:
                 try:
                     was_online_utc = user_status.was_online.replace(tzinfo=utc_tz)
@@ -260,20 +262,20 @@ async def get_user_last_online(event, user_id):
                             f"⌬ Last Online: <code>{readable_last_online}</code>\n"
                             f"⌬ Current Username: <code>@{current_username}</code>"
                         )
- 
+
         return f"<b>User: {mention_text} (<code>{user.id}</code>)</b>\n⌬ Status: <code>Unknown or unsupported</code>"
- 
+
     else:
         return f"<b>User: {mention_text} (<code>{user.id}</code>) is a bot and their status is not tracked."
- 
- 
+
+
 async def last_online_info(event, user_id):
     user = await event.client.get_entity(user_id)
     mention_text = inline_mention(user)
- 
+
     if not user.bot:
         user.status
- 
+
         try:
             db_user = await collection.find_one({"user_id": user.id})
             if db_user:
@@ -292,13 +294,13 @@ async def last_online_info(event, user_id):
             LOGS.error(f"Error: {e}")
     else:
         return f"<b>User: {mention_text} (<code>{user.id}</code>)</b> is a bot and their status is not tracked."
- 
- 
+
+
 @ultroid_cmd(pattern="seen(?: |$)(.*)", manager=True)
 async def _(event):
     input_str = event.pattern_match.group(1)
     xx = await event.eor("Fetching last online time...", parse_mode="html")
- 
+
     try:
         if input_str:
             if input_str.isdigit():

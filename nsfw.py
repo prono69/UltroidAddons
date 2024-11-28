@@ -11,24 +11,24 @@
 
 ~ VERSITILE: `maid` `marin-kitagawa` `mori-calliope` `oppai`
      `raiden-shogun` `selfies` `uniform` `waifu`
-     
+
 ✘ `{i}fan <count> or {i}fan -h (for list)`
     __Sends a NSFW image from the api.__
-    
+
 **>> Default count set to 1**
 """
 
 import os
+import subprocess
 from random import choice
 
+import aiofiles
+import aiohttp
 import requests
 from pyUltroid.fns.misc import unsavegif
 from telethon.errors import PhotoSaveFileInvalidError, WebpageCurlFailedError
-import aiohttp
-import aiofiles
-import subprocess
-from . import ultroid_cmd
 
+from . import ultroid_cmd
 
 # This list is for waifu.im
 ISFW = [
@@ -59,7 +59,7 @@ waifu_help += "\n\n**😇 SFW** :  "
 for m in ISFW:
     waifu_help += f"`{m.lower()}`   "
 
-    
+
 @ultroid_cmd(pattern="nm ?(.*)$")
 async def waifu_im(event):
     input_args = event.pattern_match.group(1).strip()
@@ -67,7 +67,7 @@ async def waifu_im(event):
     is_nsfw = False
     query = ""
     reply_to = event.reply_to_msg_id
-    
+
     args = input_args.split()
     if len(args) >= 1:
         if args[0].isdigit():
@@ -76,10 +76,9 @@ async def waifu_im(event):
         else:
             query = " ".join(args)
 
-    
     is_nsfw = "-n" in args
     query = query.replace("-n", "").strip()  # Remove '-n' flag from the query
-    
+
     if not query:
         query = "random"
 
@@ -121,9 +120,10 @@ async def waifu_im(event):
         except Exception as e:
             return await response_msg.edit(f"Error: {e}")
 
-    
     if num_images == 1:
-        await event.client.send_file(event.chat_id, images[0], caption=f"__**{query}**__", reply_to=reply_to)
+        await event.client.send_file(
+            event.chat_id, images[0], caption=f"__**{query}**__", reply_to=reply_to
+        )
         await response_msg.delete()
     else:
         media_group = []
@@ -161,7 +161,6 @@ async def waifu_im(event):
             os.rmdir(temp_dir)  # Remove temp directory
 
         await response_msg.delete()
-
 
 
 NSFW = [
@@ -255,18 +254,20 @@ async def fanbox(event):
             query = " ".join(args[1:])
         else:
             query = " ".join(args)
-            
+
     if query == "-h":
         return await event.eor(f"**Here's your tags!**\n\n{fantox_help}", 15)
-        
+
     # If no query is provided or invalid, choose randomly
     if not query or query not in NSFW:
         if query and query not in NSFW:
-            return await event.eor(f"**❌ Invalid tag!**\n\nChoose from:\n{fantox_help}", 15)
+            return await event.eor(
+                f"**❌ Invalid tag!**\n\nChoose from:\n{fantox_help}", 15
+            )
         query = choice(NSFW)
-        
+
     if num_images > 10:
-    	return await event.eor("__⚠️ You can fetch up to 10 images at once.__", 5)    
+        return await event.eor("__⚠️ You can fetch up to 10 images at once.__", 5)
 
     msg = await event.eor(f"__Fetching {num_images} image(s) for {query}...__")
 
@@ -280,20 +281,20 @@ async def fanbox(event):
                 subprocess.run(["wget", "-O", filename, pic_url], check=True)
                 caption = f"__Here is your {query} image! 🖼__️\n©️ @Neko_Drive"
                 try:
-                	await event.client.send_file(
-                	event.chat_id,
-                	file=filename,
-                    caption=caption,
-                    reply_to=event.reply_to_msg_id,
-                )
+                    await event.client.send_file(
+                        event.chat_id,
+                        file=filename,
+                        caption=caption,
+                        reply_to=event.reply_to_msg_id,
+                    )
                 except PhotoSaveFileInvalidError:
-                	await event.client.send_file(
-            event.chat_id,
-            file=pic_url,
-            captain=caption,
-            force_document=True,
-            reply_to=event.reply_to_msg_id,
-        )
+                    await event.client.send_file(
+                        event.chat_id,
+                        file=pic_url,
+                        captain=caption,
+                        force_document=True,
+                        reply_to=event.reply_to_msg_id,
+                    )
                 os.remove(filename)
             except Exception as e:
                 await msg.edit(f"❌ Error downloading the image: `{e}`")
@@ -303,7 +304,9 @@ async def fanbox(event):
             async with aiohttp.ClientSession() as session:
                 for i in range(num_images):
                     try:
-                        response = await session.get(f"https://fantox-apis.vercel.app/{query}")
+                        response = await session.get(
+                            f"https://fantox-apis.vercel.app/{query}"
+                        )
                         json_data = await response.json()
                         pic_url = json_data.get("url")
 
