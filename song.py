@@ -249,7 +249,7 @@ async def deezer_search(message):
 	if not query:
 	       await message.eor("Usage: applm <query>", 7)
 	       return
-    await search_music(
+	await search_music(
         f"{BASE_URL}/search/deezer?q=", format_deezer_result, message, query
     )
     

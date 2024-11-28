@@ -16,7 +16,7 @@ async def fetch_ifsc_details(m):
         ifsc_code = m.pattern_match.group(1)
         reply = await m.get_reply_message()
         if not ifsc_code and m.is_reply:
-            isfc_code = reply.text
+            ifsc_code = reply.text
         kk_ = await m.edit("`Getting IFSC information...`")
         response = requests.get(f"{API_BASE_URL}{ifsc_code}")
         response.raise_for_status()
