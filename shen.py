@@ -18,10 +18,18 @@ API_URL = "https://xyz69-hanime.hf.space/search?query="
 
 def format_number(num):
     """Convert a large number into a shortened format."""
-    if num >= 1_000_000:
-        return f"{num // 1_000_000}M"
+    if not isinstance(num, (int, float)):
+        raise ValueError("Input must be a number")
+    
+    if num < 0:
+        return "-" + format_number(-num)
+    
+    if num >= 1_000_000_000:
+        return f"{num // 1_000_000_000}{'' if num % 1_000_000_000 == 0 else f'.{(num % 1_000_000_000) // 100_000_000:.0f}'}B"
+    elif num >= 1_000_000:
+        return f"{num // 1_000_000}{'' if num % 1_000_000 == 0 else f'.{(num % 1_000_000) // 100_000:.0f}'}M"
     elif num >= 1_000:
-        return f"{num // 1_000}K"
+        return f"{num // 1_000}{'' if num % 1_000 == 0 else f'.{(num % 1_000) // 100:.0f}'}K"
     return str(num)
 
 
