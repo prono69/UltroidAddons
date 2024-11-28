@@ -23,9 +23,8 @@
 import html
 import random
 
-from telethon.utils import get_display_name
-
 from pyUltroid.fns.helper import extract_user
+from telethon.utils import get_display_name
 
 from . import *
 

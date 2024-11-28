@@ -2,14 +2,15 @@
 Reverse image search handler.
 
 Usage:
-	- `.search [engine]`: Search with a specific engine (e.g., `lens`, `bing`).
-	- `.search`: Search with all engines.
-"""    
+        - `.search [engine]`: Search with a specific engine (e.g., `lens`, `bing`).
+        - `.search`: Search with all engines.
+"""
 
-import requests
-from io import BytesIO
 import os
 import urllib.parse
+from io import BytesIO
+
+import requests
 
 apiflash_key = udB.get_key("APIFLASH_KEY")
 
@@ -23,24 +24,30 @@ SEARCH_ENGINES = {
     "saucenao": "https://saucenao.com/search.php?db=999&url={image}",
 }
 
+
 @ultroid_cmd(pattern="rev")
 async def reverse_image_search(event):
     reply = await event.get_reply_message()
     if not event.is_reply or not reply.media:
-        await event.eor("Please reply to an image with `.search [engine]` or `.search`.", 5)
+        await event.eor(
+            "Please reply to an image with `.search [engine]` or `.search`.", 5
+        )
         return
 
     command_parts = event.text.split(maxsplit=1)
     engines_to_use = (
-        [command_parts[1].strip().lower()] 
-        if len(command_parts) > 1 and command_parts[1].strip() 
-        else ["google"])
-    
+        [command_parts[1].strip().lower()]
+        if len(command_parts) > 1 and command_parts[1].strip()
+        else ["google"]
+    )
 
-    invalid_engines = [engine for engine in engines_to_use if engine not in SEARCH_ENGINES]
+    invalid_engines = [
+        engine for engine in engines_to_use if engine not in SEARCH_ENGINES
+    ]
     if invalid_engines:
         await event.eor(
-            f"Invalid engine(s): {', '.join(invalid_engines)}. Available: {', '.join(SEARCH_ENGINES.keys())}", 7
+            f"Invalid engine(s): {', '.join(invalid_engines)}. Available: {', '.join(SEARCH_ENGINES.keys())}",
+            7,
         )
         return
 
@@ -65,6 +72,7 @@ async def reverse_image_search(event):
         if photo_path and os.path.exists(photo_path):
             os.remove(photo_path)
 
+
 def upload_image(photo_path):
     """Uploads an image to tmpfiles.org and returns the direct download URL."""
     try:
@@ -84,6 +92,7 @@ def upload_image(photo_path):
     except Exception:
         return None
 
+
 async def send_screenshot(event, url, engine_name):
     """Takes a screenshot of the URL and sends it to the chat."""
     screenshot_data = generate_screenshot(url)
@@ -99,13 +108,12 @@ async def send_screenshot(event, url, engine_name):
     else:
         await event.eor(f"Failed to take screenshot for {engine_name.capitalize()}.")
 
-        
+
 def generate_screenshot(url):
     api_url = f"https://api.apiflash.com/v1/urltoimage?access_key={apiflash_key}&url={urllib.parse.quote(url)}&format=png"
     response = requests.get(api_url)
     if response.status_code == 200:
         with open("webshot.jpg", "wb") as f:
             f.write(response.content)
-        return "webshot.jpg"     
+        return "webshot.jpg"
     return None
-    

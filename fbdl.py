@@ -8,11 +8,13 @@
 """
 
 import os
-import requests
+
 import aiofiles
+import requests
+import wget
 from pyUltroid.fns.tools import metadata
 from telethon.tl.types import DocumentAttributeFilename, DocumentAttributeVideo
-import wget
+
 
 @ultroid_cmd(pattern="fbdl ?(.*)$")
 async def fb_dl(event):
@@ -55,13 +57,15 @@ async def fb_dl(event):
         response.raise_for_status()  # Check if the request was successful
 
         result = response.json()
-        
+
         video_url = result.get("medias", [])[0].get("url")
         thumbnail_url = result.get("thumbnail", "")
         thumb = wget.download(thumbnail_url)
-        
+
         if not video_url:
-            return await kk.edit("__Failed to retrieve video. Please check the URL or try again later.__")
+            return await kk.edit(
+                "__Failed to retrieve video. Please check the URL or try again later.__"
+            )
 
         # asynchronous
         video_response = requests.get(video_url, stream=True)
@@ -74,7 +78,7 @@ async def fb_dl(event):
         if meta is not None:
             video_duration_in_seconds = meta.get("duration", "")
             video_size = (meta.get("width", ""), meta.get("height", ""))
-            
+
             attributes = [
                 DocumentAttributeFilename(filename),
                 DocumentAttributeVideo(
@@ -85,10 +89,13 @@ async def fb_dl(event):
                 ),
             ]
 
-        
-        file, _ = await event.client.fast_uploader(filename, show_progress=True, event=event, to_delete=True)
-        thumbnail, _ = await event.client.fast_uploader(thumb, show_progress=True, event=event, to_delete=True)
-        
+        file, _ = await event.client.fast_uploader(
+            filename, show_progress=True, event=event, to_delete=True
+        )
+        thumbnail, _ = await event.client.fast_uploader(
+            thumb, show_progress=True, event=event, to_delete=True
+        )
+
         await event.client.send_file(
             event.chat_id,
             file=file,
@@ -97,7 +104,7 @@ async def fb_dl(event):
             attributes=attributes,
             supports_streaming=True,
         )
-        
+
         await kk.delete()
 
     except requests.exceptions.RequestException as e:

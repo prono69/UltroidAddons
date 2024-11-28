@@ -25,7 +25,6 @@ __all__ = "BrainfuckInterpreter"
 
 
 class IOStream:
-
     def __init__(self, data=None):
         self._buffer = data or ""
 
@@ -47,7 +46,6 @@ class IOStream:
 
 
 class IncrementalByteCellArray:
-
     def __init__(self):
         self.byte_cells = [0]
         self.data_pointer = 0
@@ -94,7 +92,6 @@ class IncrementalByteCellArray:
 
 
 class BrainfuckInterpreter:
-
     def __init__(self, commands: str):
         self._commands = commands
 

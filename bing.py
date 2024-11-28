@@ -17,10 +17,10 @@
 
 import asyncio
 import imghdr
+import re
 from functools import partial
 from pathlib import Path
 from random import choice, shuffle
-import re
 from secrets import token_hex
 from shutil import rmtree
 from urllib.parse import quote_plus, unquote, unquote_plus, urlsplit

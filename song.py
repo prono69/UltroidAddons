@@ -25,17 +25,20 @@
     __Search songs from Apple Music.__    
 """
 
-import os
-import time
-import re
-import requests
 import asyncio
+import os
+import re
+import time
 
+import requests
 from lyricsgenius import Genius
-from telethon.errors.rpcerrorlist import UserAlreadyParticipantError, MessageTooLongError
+from pyUltroid.fns.tools import post_to_telegraph
+from telethon.errors.rpcerrorlist import (
+    MessageTooLongError,
+    UserAlreadyParticipantError,
+)
 from telethon.tl.functions.messages import ImportChatInviteRequest
 from telethon.tl.types import InputMessagesFilterMusic as filtermus
-from pyUltroid.fns.tools import post_to_telegraph
 
 from . import *
 
@@ -46,6 +49,7 @@ NEX_API = udB.get_key("NEX_API")
 
 
 import requests
+
 
 async def search_music(api_url, format_function, message, query, params=None):
     await message.eor("__Searching...__")
