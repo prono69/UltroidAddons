@@ -8,8 +8,9 @@
 """
 
 import io
-import requests
 import random
+
+import requests
 from addons.shen import format_number
 
 betakey = random.choice(f"{udB.get_key('BETA_API')}".split(" "))
