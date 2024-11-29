@@ -100,7 +100,7 @@ def format_apple_music_result(data):
     result = ""
     for item in data[:15]:  # Limit to 15 results
         title = item.get("title", "Unknown Title")
-        artists = item.get("artist", "Unknown Artist")
+        artists = item.get("artists", "Unknown Artist")
         music_type = item.get("type", "Track")
         url = item.get("url", "#")
         result += f"🎵 **{title}** by {artists}\n"
