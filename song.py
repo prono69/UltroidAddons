@@ -14,15 +14,15 @@
 
 • `{i}song <search query>`
     __Alternative song command.__
-    
+
 • `{i}llyr <search query>`
     __Get lyrics of song from API.__
-    
+
 • `{i}sspot <search query>`
     __Search songs from Spotify.__
-    
+
 • `{i}aplm <search query>`
-    __Search songs from Apple Music.__    
+    __Search songs from Apple Music.__
 """
 
 import asyncio
@@ -54,36 +54,39 @@ import requests
 async def search_music(api_url, format_function, message, query, params=None):
     await message.eor("__Searching...__")
     url = f"{api_url}{query}"
-    
+
     if params is None:
         params = {}
-    
+
     try:
         response = requests.get(url, params=params)
         # Check if the response was successful
         if response.status_code == 200:
             try:
                 data = response.json()
-                
+
                 if isinstance(data, list):
                     result = format_function(data)
                 elif isinstance(data, dict) and "data" in data:
                     result = format_function(data["data"])
                 else:
                     result = "No data found or unexpected format."
-                
+
                 await message.edit(result, parse_mode="md")
             except (ValueError, KeyError, TypeError) as e:
-                await message.edit(f"An error occurred while processing the data: {str(e)}")
+                await message.edit(
+                    f"An error occurred while processing the data: {str(e)}"
+                )
         else:
             await message.edit(f"API returned an error: {response.status_code}")
     except requests.exceptions.RequestException as e:
         await message.edit(f"Failed to connect to the API: {str(e)}")
 
-        
+
 def format_lyrics_result(data):
     return f"🎵 **{data['fullTitle']}** by {data['artist']}\n\n__{data['lyrics']}__"
-    
+
+
 def format_spotify_result(data):
     result = ""
     for item in data[:15]:  # Limit to 15 results
@@ -94,8 +97,8 @@ def format_spotify_result(data):
         result += f"Publish Date: {item['publish']}\n"
         result += f"[Listen on Spotify]({item['url']})\n\n"
     return result
-    
-    
+
+
 def format_apple_music_result(data):
     result = ""
     for item in data[:15]:  # Limit to 15 results
@@ -107,8 +110,8 @@ def format_apple_music_result(data):
         result += f"Type: {music_type}\n"
         result += f"[Listen on Apple Music]({url})\n\n"
     return result
-    
-    
+
+
 def format_deezer_result(data):
     result = ""
     for item in data[:15]:  # Limit to 15 results
@@ -117,8 +120,8 @@ def format_deezer_result(data):
         result += f"Rank: {item['rank']}\n"
         result += f"[Listen on Deezer]({item['url']})\n\n"
     return result
- 
-    
+
+
 @ultroid_cmd(pattern="lyrics ?(.*)$")
 async def getlyrics(message):
     query = message.pattern_match.group(1)
@@ -164,7 +167,8 @@ async def getlyrics(message):
             f"**{Symbols.anchor} Title:** `{title}`\n**{Symbols.anchor} Artist:** `{artist}`\n\n**{Symbols.anchor} Lyrics:** [Click Here]({url})",
             link_preview=False,
         )
-                
+
+
 @ultroid_cmd(pattern="song ?(.*)")
 async def _(event):
     ultroid_bot = event.client
@@ -194,62 +198,54 @@ async def _(event):
     except Exception:
         return await okla.eor("`Song not found.`")
 
-        
+
 @ultroid_cmd(pattern="llyr ?(.*)$")
 async def lyrics_search(message):
     input = message.pattern_match.group(1)
     reply = await message.get_reply_message()
-    query = (
-        input
-        if input
-        else reply.text
-    )
+    query = input if input else reply.text
     if not query:
         await message.eor("Usage: lyrics <song name>", 7)
         return
     await search_music(
         f"{BASE_URL}/search/letra?query=", format_lyrics_result, message, query
     )
-    
+
+
 @ultroid_cmd(pattern="sspot ?(.*)$")
 async def spotify_search(message):
     input = message.pattern_match.group(1)
     reply = await message.get_reply_message()
-    query = (
-        input
-        if input
-        else reply.text
-    )
+    query = input if input else reply.text
     if not query:
         await message.eor("Usage: spot <query>", 7)
         return
     await search_music(
         f"{BASE_URL}/search/spotify?q=", format_spotify_result, message, query
     )
-    
+
 
 @ultroid_cmd(pattern="aplm ?(.*)$")
 async def applemusic_search(message):
-	input = message.pattern_match.group(1)
-	reply = await message.get_reply_message()
-	query = (input if input else reply.text)
-	if not query:
-	       await message.eor("Usage: applm <query>", 7)
-	       return
-	await search_music(
+    input = message.pattern_match.group(1)
+    reply = await message.get_reply_message()
+    query = input if input else reply.text
+    if not query:
+        await message.eor("Usage: applm <query>", 7)
+        return
+    await search_music(
         f"{BASE_URL}/search/applemusic?text=", format_apple_music_result, message, query
     )
-    
-    
+
+
 @ultroid_cmd(pattern="deezer ?(.*)$")
 async def deezer_search(message):
-	input = message.pattern_match.group(1)
-	reply = await message.get_reply_message()
-	query = (input if input else reply.text)
-	if not query:
-	       await message.eor("Usage: applm <query>", 7)
-	       return
-	await search_music(
+    input = message.pattern_match.group(1)
+    reply = await message.get_reply_message()
+    query = input if input else reply.text
+    if not query:
+        await message.eor("Usage: applm <query>", 7)
+        return
+    await search_music(
         f"{BASE_URL}/search/deezer?q=", format_deezer_result, message, query
     )
-    
