@@ -5,6 +5,9 @@
 
 • `{i}gal <thai, chi, indo, jap, vit, ko, mal>`
     __Random girls pic.__
+    
+• `{i}ngal -h` or `{i}ngal`
+    __Random NSFW girls pic.__
 """
 
 from random import choice
@@ -29,6 +32,11 @@ async def girls(event):
         "mal": "malaysia",
         "thai": "thailand",
     }
+    
+    if query == "-h":
+        available_keys = " ".join(country_map.keys())
+        await event.eor(f"👀 **Available options:**\n\n `{available_keys}`")
+        return
 
     if not query:
         query = choice(list(country_map.keys()))
@@ -113,6 +121,11 @@ async def girls(event):
         "white": "White",
         "yoga": "Yoga",
     }
+    
+    if query == "-h":
+        available_keys = " ".join(country_map.keys())
+        await event.eor(f"👀 **Available options:**\n\n `{available_keys}`")
+        return
 
     if not query:
         query = choice(list(country_map.keys()))
