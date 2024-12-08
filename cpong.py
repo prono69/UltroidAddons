@@ -1,13 +1,16 @@
 import asyncio
 import random
 import time
-import requests
-from random import choice
 from datetime import datetime as dt
-from . import start_time, ultroid_bot, inline_mention, time_formatter
+from random import choice
+
+import requests
+
+from . import inline_mention, start_time, time_formatter, ultroid_bot
 
 PING_DISABLE_NONPREM = {}
 ANIME_WAIFU_IS_RANDOM = {}
+
 
 def waifu_hentai():
     LIST_SFW_JPG = ["trap", "waifu", "blowjob", "neko"]
@@ -19,6 +22,7 @@ def waifu_hentai():
     response = requests.get(waifu_param).json()
     return response["url"]
 
+
 def waifu_random():
     LIST_SFW_JPG = ["neko", "waifu", "megumin"]
     waifu_link = "https"
@@ -29,7 +33,7 @@ def waifu_random():
     response = requests.get(waifu_param).json()
     return response["url"]
 
-    
+
 @ultroid_cmd(pattern="pingset", chats=[], type=["official", "assistant"])
 async def pingsetsetting(event):
     global PING_DISABLE_NONPREM, ANIME_WAIFU_IS_RANDOM
@@ -53,7 +57,7 @@ async def pingsetsetting(event):
                 PING_DISABLE_NONPREM[event.sender_id] = False
                 ANIME_WAIFU_IS_RANDOM[event.sender_id] = {
                     "anime": False,
-                    "hentai": False
+                    "hentai": False,
                 }
                 await event.eor("__Turned off picture ping.__", 7)
         else:
@@ -104,7 +108,7 @@ async def custom_ping_handler(event):
             )
         await event.client.send_file(event.chat_id, photo, caption=caption)
         await lol.delete()
-        return 
+        return
     if is_anime.get("hentai", False):
         photo = waifu_hentai()
         if not (await ultroid_bot.get_me()).premium:
