@@ -8,9 +8,10 @@
 """
 
 import asyncio
-
+import aiohttp
+import aiofiles
+import os
 import requests
-
 from . import ultroid_cmd
 
 API_URL = "https://xyz69-hanime.hf.space/search?query="
@@ -35,6 +36,16 @@ def format_number(num):
 
 def truncate_text(text: str, limit: int = 300) -> str:
     return text if len(text) <= limit else f"{text[:limit].rstrip()}..."
+
+
+async def download_file(url: str, save_path: str):
+    """Download a file asynchronously using aiohttp."""
+    async with aiohttp.ClientSession() as session:
+        async with session.get(url) as response:
+            if response.status == 200:
+                async with aiofiles.open(save_path, mode="wb") as f:
+                    await f.write(await response.read())
+    return save_path
 
 
 @ultroid_cmd(pattern="shen ?([\d]*) ?(.*)")
@@ -78,6 +89,7 @@ async def hanime_search(event):
             tags = result.get("tags", [])
             is_futa = "Yes" if "futa" in tags or "futanari" in tags else "No"
             is_creampie = "Yes" if "creampie" in tags else "No"
+            is_ntr = "Yes" if "ntr" in tags else "No"
 
             # Append "More Info" link to the description
             more_info_url = f"https://hanime.tv/videos/hentai/{slug}"
@@ -92,23 +104,34 @@ async def hanime_search(event):
                 f"📊 <b>Monthly Rank:</b> <code>{monthly_rank}</code>\n"
                 f"💦 <b>Creampie:</b> <code>{is_creampie}</code>\n"
                 f"🍆 <b>Futa:</b> <code>{is_futa}</code>\n"
+                f"⚠️ <b>NTR:</b> <code>{is_ntr}</code>\n"
                 f"📖 <b>Description:</b> <i>{description}</i>\n\n"
                 f"©️ &lt;/&gt; @Neko_Drive"
             )
 
             # Prepare the message
-            messages.append({"file": cover_url, "caption": caption})
+            messages.append({"file_url": cover_url, "caption": caption})
 
-        # Send the messages
+        # Download, send, and delete files
         for message in messages:
-            await event.client.send_file(
-                event.chat_id,
-                file=message["file"],
-                caption=message["caption"],
-                parse_mode="html",
-                reply_to=event.reply_to_msg_id,
-            )
+            file_url = message["file_url"]
+            file_path = f"{os.path.basename(file_url)}"
+            await download_file(file_url, file_path)
+
+            try:
+                await event.client.send_file(
+                    event.chat_id,
+                    file=file_path,
+                    caption=message["caption"],
+                    parse_mode="html",
+                    reply_to=event.reply_to_msg_id,
+                )
+            finally:
+                if os.path.exists(file_path):
+                    os.remove(file_path)
+
             await asyncio.sleep(1)
+
         await msg.delete()
 
     except requests.exceptions.RequestException as e:

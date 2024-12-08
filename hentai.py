@@ -9,6 +9,7 @@ import os
 
 import aiofiles
 import requests
+from addons.shen import format_number
 
 
 @ultroid_cmd(pattern="hen$")
@@ -35,7 +36,7 @@ async def hentai_trend(event):
             message_part = (
                 f"**{index}.** `{data['name']}`\n"
                 f"   - **📎 Link:** __https://hanime.tv/videos/hentai/{data['slug']}__\n"
-                f"   - **👁️ Views:** __{data['views']}__\n\n"
+                f"   - **👁️ Views:** __{format_number(data['views'])}__\n\n"
             )
             caption_message += message_part
 
