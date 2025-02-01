@@ -9,7 +9,7 @@ from . import LOGS, run_async, ultroid_cmd
 
 @run_async
 def analyze_image(encoded_image, prompt, bid):
-    url = "https://bot-management-4tozrh7z2a-ue.a.run.app/chat/see"
+    url = "https://app-paal-chat-1003522928061.us-east1.run.app/api/chat/see"
     headers = {
         "Content-Type": "application/json",
         "Accept": "application/json, text/plain, */*",

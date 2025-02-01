@@ -3,22 +3,29 @@ web -- reply or type
 """
 
 from io import BytesIO
-
 import aiohttp
-
+import re
 from . import LOGS, check_filename, get_string, run_async, udB, ultroid_cmd
 
+def html2md(text):
+    pattern = r'<a\s+[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)<\/a>'
+    replacement = r'[\2](\1)'
+    markdown_text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
+    return markdown_text
 
 async def fetch_data_from_api(question):
-    url = "https://bot-management-4tozrh7z2a-ue.a.run.app/chat/web"
+    url = "https://app-paal-chat-1003522928061.us-east1.run.app/api/chat/web"
     headers = {"Content-Type": "application/json", "Accept": "application/json"}
     payload = {"prompt": question, "bid": "040d0481"}
 
     async with aiohttp.ClientSession() as session:
         async with session.post(url, headers=headers, json=payload) as response:
-            data = await response.json()
-            return data.get("answer")
-
+            if response.status == 200:
+                data = await response.json()
+                return data.get("answer")
+            else:
+                LOGS.warning(f"Failed to fetch data: {response.status}")
+                return None
 
 @ultroid_cmd(pattern="web ?(.*)")
 async def ask_bot(e):
@@ -32,22 +39,21 @@ async def ask_bot(e):
     if not question:
         return await moi.eor("`Please provide a question to ask the bot.`")
 
-    # moi = await b.eor(f"**Question ✅**\n\n`{question}`\n\n`Answer❌❌ `\n""Fetching the answer...")
     try:
         response = await fetch_data_from_api(question)
         if not response:
             return await moi.edit("Failed to fetch the answer.")
     except Exception as exc:
-        LOGS.warning(exc, exc_info=True)
+        LOGS.warning(f"Error fetching data: {exc}", exc_info=True)
         return await moi.edit(f"Error: {exc}")
 
-    out = f"Question ✅\n\n{question}\n\nAnswer 👇`\n{response}"
+    response_markdown = html2md(response)
+    out = f"**Query:**\n\n~ __{question}__\n\n**Answer:** \n__{response_markdown}__"
+
     if len(out) > 4096:
-        out = f"Question ✅\n\n{question}\n\nAnswer 👇`\n{response}"
         with BytesIO(out.encode()) as outf:
             outf.name = "answer.txt"
-            await e.respond(f"`{response}`", file=outf, reply_to=e.reply_to_msg_id)
+            await e.respond(f"`{response_markdown}`", file=outf, reply_to=e.reply_to_msg_id)
         await moi.delete()
     else:
-        out = f"<b>Question</b> ✅\n\n<code>{question}</code>\n\n<b>Answer</b> 👇\n{response}"
-        await moi.edit(out, parse_mode="html")
+        await moi.edit(out)
