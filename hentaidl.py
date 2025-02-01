@@ -7,7 +7,7 @@ import requests
 logging.basicConfig(level=logging.DEBUG)
 
 # Define the API URLs
-VIDEO_API_URL = "https://deliriussapi-oficial.vercel.app/anime/hentaivid"
+VIDEO_API_URL = "https://delirius-apiofc.vercel.app/anime/hentaivid"
 
 # Use a writable temporary directory
 TEMP_DIR = "/tmp/telegram_videos"

@@ -11,7 +11,7 @@ fg = random.choice(fg_key.split(" "))
 zenkey = random.choice(f"{udB.get_key('ZEN_API')}".split(" "))
 
 # API URLS
-BASE = "https://deliriussapi-oficial.vercel.app/"
+BASE = "https://delirius-apiofc.vercel.app/"
 CN_API = "https://www.loliapi.com/acg/"
 FG_API = "https://api.fgmods.xyz/api/"
 GURU_API = "https://guruapi.tech/api/rnsfw/"
