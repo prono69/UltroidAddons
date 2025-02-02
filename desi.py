@@ -19,7 +19,7 @@ async def desixx_download(message):
     url = f"https://files.desixx.net/files/{query}.mp4"
     filename = f"downloads/{query}.mp4"
 
-    processing_msg = await message.eor(f"📥 Downloading {filename}...")
+    processing_msg = await message.eor(f"📥 __Downloading {query}.mp4__ ...")
 
     try:
         # Download file using wget
@@ -34,6 +34,7 @@ async def desixx_download(message):
         file_name = f"{query}.mp4"
         caption=f"✅ **Download Complete!**\n📂 `{file_name}`"
         await process_video(filename, "downloads", caption, message)
+        await message.delete()
 
     except Exception as e:
         await message.eor(f"❌ Error: {e}", 5)
