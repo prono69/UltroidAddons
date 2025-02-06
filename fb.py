@@ -5,7 +5,9 @@ Command : `{i}fb <input or reply link>`
 """
 
 import asyncio
+
 from telethon.errors.rpcerrorlist import YouBlockedUserError
+
 from . import ultroid_cmd
 
 
@@ -25,7 +27,7 @@ async def insta_dl(event):
     reply = await event.get_reply_message()
     FWRD = udB.get_key("FWRD")
     meme = -1002051913343
-    
+
     if not link and reply:
         link = reply.text
     if not link:
@@ -48,14 +50,14 @@ async def insta_dl(event):
             media = await conv.get_response()
             # Check and append media responses
             if media.media:
-            	while True:
-            		media_list.append(media)
-            		try:
-            			media = await conv.get_response(timeout=4)
-            			await event.client.send_read_acknowledge(conv.chat_id)
-            		except asyncio.TimeoutError:
-            			break
-            			
+                while True:
+                    media_list.append(media)
+                    try:
+                        media = await conv.get_response(timeout=4)
+                        await event.client.send_read_acknowledge(conv.chat_id)
+                    except asyncio.TimeoutError:
+                        break
+
             # Process and send the collected media files
             if media_list:
                 await eyepatch.delete()
@@ -97,7 +99,10 @@ async def insta_dl(event):
                         break
                 await eyepatch.delete()
                 await event.client.send_file(
-                    event.chat_id, media_list, caption=f"__{link}__", reply_to=event.reply_to_msg_id
+                    event.chat_id,
+                    media_list,
+                    caption=f"__{link}__",
+                    reply_to=event.reply_to_msg_id,
                 )
                 if FWRD and meme != event.chat_id:
                     await event.client.send_file(
