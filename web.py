@@ -2,16 +2,20 @@
 web -- reply or type
 """
 
-from io import BytesIO
-import aiohttp
 import re
+from io import BytesIO
+
+import aiohttp
+
 from . import LOGS, check_filename, get_string, run_async, udB, ultroid_cmd
+
 
 def html2md(text):
     pattern = r'<a\s+[^>]*href=["\']([^"\']+)["\'][^>]*>(.*?)<\/a>'
-    replacement = r'[\2](\1)'
+    replacement = r"[\2](\1)"
     markdown_text = re.sub(pattern, replacement, text, flags=re.IGNORECASE)
     return markdown_text
+
 
 async def fetch_data_from_api(question):
     url = "https://app-paal-chat-1003522928061.us-east1.run.app/api/chat/web"
@@ -26,6 +30,7 @@ async def fetch_data_from_api(question):
             else:
                 LOGS.warning(f"Failed to fetch data: {response.status}")
                 return None
+
 
 @ultroid_cmd(pattern="web ?(.*)")
 async def ask_bot(e):
@@ -53,7 +58,9 @@ async def ask_bot(e):
     if len(out) > 4096:
         with BytesIO(out.encode()) as outf:
             outf.name = "answer.txt"
-            await e.respond(f"`{response_markdown}`", file=outf, reply_to=e.reply_to_msg_id)
+            await e.respond(
+                f"`{response_markdown}`", file=outf, reply_to=e.reply_to_msg_id
+            )
         await moi.delete()
     else:
         await moi.edit(out)

@@ -27,7 +27,7 @@ async def insta_dl(event):
     reply = await event.get_reply_message()
     FWRD = udB.get_key("FWRD")
     meme = -1002051913343
-    
+
     if not link and reply:
         link = reply.text
     if not link:
@@ -47,28 +47,28 @@ async def insta_dl(event):
             v1_flag = await conv.send_message("/start")
         except YouBlockedUserError:
             v1_flag = await conv.send_message("/start")
-        
+
         checker = await conv.get_response()
         await event.client.send_read_acknowledge(conv.chat_id)
-        
+
         if "Choose the language you like" in checker.message:
             await checker.click(1)
             await conv.send_message(link)
             await conv.get_response()
             await event.client.send_read_acknowledge(conv.chat_id)
-        
+
         await conv.send_message(link)
         await conv.get_response()
         await event.client.send_read_acknowledge(conv.chat_id)
-        
+
         try:
             media = await conv.get_response(timeout=10)
             await event.client.send_read_acknowledge(conv.chat_id)
-            
+
             # Check and append media responses
             if media.media:
                 media_list.append(media)
-            
+
             # Continue fetching additional media responses
             while True:
                 try:
@@ -78,7 +78,7 @@ async def insta_dl(event):
                         media_list.append(media)
                 except asyncio.TimeoutError:
                     break
-            
+
             # Process and send the collected media files
             if media_list:
                 details = media_list[0].message.splitlines()
@@ -125,7 +125,10 @@ async def insta_dl(event):
                         break
                 await eyepatch.delete()
                 await event.client.send_file(
-                    event.chat_id, media_list, caption=f"__{link}__", reply_to=event.reply_to_msg_id
+                    event.chat_id,
+                    media_list,
+                    caption=f"__{link}__",
+                    reply_to=event.reply_to_msg_id,
                 )
                 if FWRD and meme != event.chat_id:
                     await event.client.send_file(
