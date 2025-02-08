@@ -21,7 +21,7 @@ async def github_repo(message):
         if not repo_input:
             await message.eor(
                 f"<b>Usage: </b><code>.repo [link/reply to link]</code>",
-                parse_mode="html", 5
+                parse_mode="html", time=5
             )
             return
         user, repo = None, None
@@ -78,5 +78,5 @@ async def github_repo(message):
 
     except Exception as e:
         await message.eor(
-            f"<code>[{getattr(e, 'error_code', '')}: {getattr(e, 'error_details', '')}] - {e}</code>", parse_mode="html", 5
+            f"<code>[{getattr(e, 'error_code', '')}: {getattr(e, 'error_details', '')}] - {e}</code>", parse_mode="html", time=5
         )
