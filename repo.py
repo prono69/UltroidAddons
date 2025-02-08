@@ -3,7 +3,7 @@
 
 • `{i}rdl <repo url>`
    __Download the whole repo in a zip file.__
-""" 
+"""
 
 import os
 import re
@@ -21,7 +21,8 @@ async def github_repo(message):
         if not repo_input:
             await message.eor(
                 f"<b>Usage: </b><code>.repo [link/reply to link]</code>",
-                parse_mode="html", time=5
+                parse_mode="html",
+                time=5,
             )
             return
         user, repo = None, None
@@ -35,7 +36,8 @@ async def github_repo(message):
 
         if not user or not repo:
             await message.eor(
-                "Could not parse the repository reference. Please provide a valid format.", 5
+                "Could not parse the repository reference. Please provide a valid format.",
+                5,
             )
             return
 
@@ -47,7 +49,8 @@ async def github_repo(message):
             repo_details = response.json()
             description = repo_details.get("description", "No description")
             await message.eor(
-                f"<b>Downloading Repository....\n\nRepository Name: {repo_details['name']}\nDescription: {description}</b>", parse_mode="html"
+                f"<b>Downloading Repository....\n\nRepository Name: {repo_details['name']}\nDescription: {description}</b>",
+                parse_mode="html",
             )
 
             default_branch = repo_details.get("default_branch", "main")
@@ -78,5 +81,7 @@ async def github_repo(message):
 
     except Exception as e:
         await message.eor(
-            f"<code>[{getattr(e, 'error_code', '')}: {getattr(e, 'error_details', '')}] - {e}</code>", parse_mode="html", time=5
+            f"<code>[{getattr(e, 'error_code', '')}: {getattr(e, 'error_details', '')}] - {e}</code>",
+            parse_mode="html",
+            time=5,
         )
