@@ -12,7 +12,8 @@ import requests
 import random
 from addons.shen import format_number
 
-betakey = random.choice(f"{udB.get_key('BETA_API')}".split(" "))
+apikey = udB.get_key('BETA_API')
+betakey = random.choice(f'{apikey}'.split(' '))
 
 
 @ultroid_cmd(pattern="igs ?(.*)$")
