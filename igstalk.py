@@ -8,12 +8,13 @@
 """
 
 import io
-import requests
 import random
+
+import requests
 from addons.shen import format_number
 
-apikey = udB.get_key('BETA_API')
-betakey = random.choice(f'{apikey}'.split(' '))
+apikey = udB.get_key("BETA_API")
+betakey = random.choice(f"{apikey}".split(" "))
 
 
 @ultroid_cmd(pattern="igs ?(.*)$")
