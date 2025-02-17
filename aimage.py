@@ -39,7 +39,7 @@ generation_config_cook = {
 }
 
 model = genai.GenerativeModel(
-    model_name="gemini-1.5-flash-latest",
+    model_name="gemini-1.5-flash",
     generation_config=generation_config,  # Ensure this is defined elsewhere
     safety_settings=[
         {"category": "harassment", "threshold": "block_none"},
@@ -50,7 +50,7 @@ model = genai.GenerativeModel(
 )
 
 model_cook = genai.GenerativeModel(
-    model_name="gemini-1.5-flash-latest", generation_config=generation_config_cook
+    model_name="gemini-1.5-flash", generation_config=generation_config_cook
 )
 
 

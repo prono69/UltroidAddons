@@ -1,3 +1,10 @@
+"""
+✘ Commands Available -
+
+• `{i}rdl <repo url>`
+   __Download the whole repo in a zip file.__
+""" 
+
 import os
 import re
 
@@ -12,9 +19,9 @@ async def github_repo(message):
             reply = await message.get_reply_message()
             repo_input = reply.text
         if not repo_input:
-            await message.edit(
+            await message.eor(
                 f"<b>Usage: </b><code>.repo [link/reply to link]</code>",
-                parse_mode="html",
+                parse_mode="html", time=5
             )
             return
         user, repo = None, None
@@ -27,8 +34,8 @@ async def github_repo(message):
             user, repo = repo_input.split("/")
 
         if not user or not repo:
-            await message.edit(
-                "Could not parse the repository reference. Please provide a valid format."
+            await message.eor(
+                "Could not parse the repository reference. Please provide a valid format.", 5
             )
             return
 
@@ -39,13 +46,13 @@ async def github_repo(message):
         if response.status_code == 200:
             repo_details = response.json()
             description = repo_details.get("description", "No description")
-            await message.edit(
-                f"<b>Downloading Repository....\n\nRepository Name: {repo_details['name']}\nDescription: {description}</b>"
+            await message.eor(
+                f"<b>Downloading Repository....\n\nRepository Name: {repo_details['name']}\nDescription: {description}</b>", parse_mode="html"
             )
 
             default_branch = repo_details.get("default_branch", "main")
         else:
-            await message.edit("Failed to fetch repository details")
+            await message.eor("Failed to fetch repository details", 5)
             return
 
         download_url = f"https://codeload.github.com/{user}/{repo}/zip/{default_branch}"
@@ -64,12 +71,12 @@ async def github_repo(message):
             await message.delete()
             os.remove(file_name)
         else:
-            await message.edit(
-                f"Failed to download repository. HTTP Status: {response.status_code}"
+            await message.eor(
+                f"Failed to download repository. HTTP Status: {response.status_code}", 5
             )
             return
 
     except Exception as e:
-        await message.edit(
-            f"<code>[{getattr(e, 'error_code', '')}: {getattr(e, 'error_details', '')}] - {e}</code>"
+        await message.eor(
+            f"<code>[{getattr(e, 'error_code', '')}: {getattr(e, 'error_details', '')}] - {e}</code>", parse_mode="html", time=5
         )

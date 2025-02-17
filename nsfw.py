@@ -39,6 +39,7 @@ ISFW = [
     "selfies",
     "uniform",
     "waifu",
+    "kamisato-ayaka",
 ]
 
 INSFW = [
