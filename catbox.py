@@ -9,7 +9,7 @@
 
 import os
 
-import requests
+import aiohttp
 from pyUltroid.fns.misc import CatboxUploader
 
 from . import udB, ultroid_cmd
@@ -17,33 +17,34 @@ from . import udB, ultroid_cmd
 userhash = udB.get_key("CATBOX") if udB.get_key("CATBOX") else ""
 uploader = CatboxUploader(userhash)
 
-
-def upload_to_envs(file_path):
+async def upload_to_envs(file_path):
     url = "https://envs.sh"
-    with open(file_path, "rb") as f:
-        files = {"file": f}
-        response = requests.post(url, files=files)
-        if response.status_code == 200:
-            response_text = response.text
-            url_ = response_text.split(" ")[-1]
-            return url_
-        else:
-            return f"Error: {response.status_code} - {response.text}"
+    async with aiohttp.ClientSession() as session:
+        with open(file_path, "rb") as f:
+            files = {"file": f.read()}  # Read file content asynchronously
+        async with session.post(url, data=files) as response:
+            if response.status == 200:
+                response_text = await response.text()
+                url_ = response_text.split(" ")[-1]
+                return url_
+            else:
+                return f"Error: {response.status} - {await response.text()}"
 
 
-def upload_to_qu(file_path, url="https://qu.ax/upload.php"):
-    files = {"files[]": open(file_path, "rb")}
-    response = requests.post(url, files=files)
-
-    # Check if the response is in JSON format
-    try:
-        response_json = response.json()
-        file_url = response_json.get("files", [{}])[0].get("url", "URL not found")
-        return file_url
-    except ValueError:
-        print("Response is not in JSON format")
-
+async def upload_to_qu(file_path, url="https://qu.ax/upload.php"):
+    async with aiohttp.ClientSession() as session:
+        with open(file_path, "rb") as f:
+            files = {"files[]": f.read()}  # Read file content asynchronously
+            data = {"expiry": "365"}  # Add expiry parameter
+        async with session.post(url, data=files, params=data) as response:
+            try:
+                response_json = await response.json()
+                file_url = response_json.get("files", [{}])[0].get("url", "URL not found")
+                return file_url
+            except aiohttp.ContentTypeError:
+                print("Response is not in JSON format")
     return None
+
 
 
 @ultroid_cmd(pattern="catb ?(.*)$")
@@ -55,10 +56,10 @@ async def handler(event):
         file_path = await reply.download_media()
 
         if flag == "e":
-            upload_link = upload_to_envs(file_path)
+            upload_link = await upload_to_envs(file_path)
             server = "Envs"
         elif flag == "q":
-            upload_link = upload_to_qu(file_path)
+            upload_link = await upload_to_qu(file_path)
             server = "Qu"
         else:
             upload_link = uploader.upload_file(file_path)

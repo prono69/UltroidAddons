@@ -25,7 +25,6 @@ from random import choice
 import aiofiles
 import aiohttp
 import requests
-from pyUltroid.fns.misc import unsavegif
 from telethon.errors import PhotoSaveFileInvalidError, WebpageCurlFailedError
 
 from . import ultroid_cmd
