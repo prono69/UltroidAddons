@@ -87,14 +87,14 @@ async def insta_dl(event):
                 await event.client.send_file(
                     event.chat_id,
                     media_list,
-                    caption=f"__{cap}\n{link}__",
+                    caption=f"__{link}__",
                     reply_to=event.reply_to_msg_id,
                 )
                 if FWRD and meme != event.chat_id:
                     await event.client.send_file(
                         meme,
                         media_list,
-                        caption=f"__{cap}\n{link}__",
+                        caption=f"__{link}__",
                     )
                 return await delete_conv(event, v1, v1_flag)
 

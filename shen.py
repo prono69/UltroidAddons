@@ -81,12 +81,15 @@ async def hanime_search(event):
             name = result.get("name", "N/A")
             description = truncate_text(result.get("description", "No Description"))
             views = format_number(result.get("views", 0))
+            likes = format_number(result.get("likes", 0))
+            dislikes = format_number(result.get("dislikes", 0))
             is_censored = "Yes" if result.get("is_censored") else "No"
             brand = result.get("brand", "Unknown")
             monthly_rank = result.get("monthly_rank", "N/A")
             cover_url = result.get("cover_url", "")
             slug = result.get("slug", "")
             tags = result.get("tags", [])
+            joined_tags = ", ".join(tags[:5]) if tags else "No tags available"
             is_futa = "Yes" if "futa" in tags or "futanari" in tags else "No"
             is_creampie = "Yes" if "creampie" in tags else "No"
             is_ntr = "Yes" if "ntr" in tags else "No"
@@ -99,12 +102,15 @@ async def hanime_search(event):
             caption = (
                 f"🎬 <b>{name}</b>\n\n"
                 f"👀 <b>Views:</b> <code>{views}</code>\n"
+                f"👍 <b>Likes:</b> <code>{likes}</code>\n"
+                f"👎 <b>Dislikes:</b> <code>{dislikes}</code>\n"
                 f"🔒 <b>Censored:</b> <code>{is_censored}</code>\n"
                 f"🏢 <b>Brand:</b> <code>{brand}</code>\n"
                 f"📊 <b>Monthly Rank:</b> <code>{monthly_rank}</code>\n"
                 f"💦 <b>Creampie:</b> <code>{is_creampie}</code>\n"
                 f"🍆 <b>Futa:</b> <code>{is_futa}</code>\n"
                 f"⚠️ <b>NTR:</b> <code>{is_ntr}</code>\n"
+                f"🏷️ <b>Tags:</b> <code>{joined_tags}</code>\n\n"
                 f"📖 <b>Description:</b> <i>{description}</i>\n\n"
                 f"©️ &lt;/&gt; @Neko_Drive"
             )
