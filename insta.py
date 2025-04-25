@@ -38,7 +38,7 @@ async def insta_dl(event):
         )
 
     v1 = "Allsavers_bot"
-    v2 = "uvd_bot"
+    v2 = "govd_bot"
     media_list = []
     eyepatch = await event.eor("__Hold your candle a little bit__")
 
