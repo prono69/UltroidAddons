@@ -1,7 +1,7 @@
 # < Source - t.me/testingpluginnn >
 # < Made for Ultroid by @Spemgod! >
 # < https://github.com/TeamUltroid/Ultroid >
-# 
+#
 # 'TG Regex taken from @TheUserge'
 
 """
@@ -12,17 +12,16 @@
 >  `{i}fwdl https://t.me/nofwd/14`
 """
 
+import asyncio
 import os
 import re
 import time
-import asyncio
 from datetime import datetime
 
+from plugins.downloadupload import process_video
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 
-from . import LOGS, time_formatter, downloader, random_string
-from plugins.downloadupload import process_video
-
+from . import LOGS, downloader, random_string, time_formatter
 
 # Source: https://github.com/UsergeTeam/Userge/blob/7eef3d2bec25caa53e88144522101819cb6cb649/userge/plugins/misc/download.py#L76
 REGEXA = r"^(?:(?:https|tg):\/\/)?(?:www\.)?(?:t\.me\/|openmessage\?)(?:(?:c\/(\d+))|(\w+)|(?:user_id\=(\d+)))(?:\/|&message_id\=)(\d+)(?:\?single)?$"
@@ -49,7 +48,7 @@ async def fwd_dl(e):
             args = reply.message
         else:
             return await eod(ghomst, "Give a tg link to download", time=10)
-    
+
     remgx = re.findall(REGEXA, args)
     if not remgx:
         return await ghomst.edit("`probably a invalid Link !?`")
@@ -58,7 +57,7 @@ async def fwd_dl(e):
         chat, id = [i for i in remgx[0] if i]
         channel = int(chat) if chat.isdigit() else chat
         if chat.isdigit():
-        	channel = f"{-100}{channel}"
+            channel = f"{-100}{channel}"
         msg_id = int(id)
     except Exception as ex:
         return await ghomst.edit("`Give a valid tg link to proceed`")
@@ -95,4 +94,3 @@ async def fwd_dl(e):
     await ghomst.edit(f"**Downloaded in {ts} !!**\n » `{dls}`\n\n⬆️ __Uploading Now__")
     await process_video(dls, DL_DIR, caption, e)
     await ghomst.delete()
-    
