@@ -17,6 +17,7 @@ from . import udB, ultroid_cmd
 userhash = udB.get_key("CATBOX") if udB.get_key("CATBOX") else ""
 uploader = CatboxUploader(userhash)
 
+
 async def upload_to_envs(file_path):
     url = "https://envs.sh"
     async with aiohttp.ClientSession() as session:
@@ -39,12 +40,13 @@ async def upload_to_qu(file_path, url="https://qu.ax/upload.php"):
         async with session.post(url, data=files, params=data) as response:
             try:
                 response_json = await response.json()
-                file_url = response_json.get("files", [{}])[0].get("url", "URL not found")
+                file_url = response_json.get("files", [{}])[0].get(
+                    "url", "URL not found"
+                )
                 return file_url
             except aiohttp.ContentTypeError:
                 print("Response is not in JSON format")
     return None
-
 
 
 @ultroid_cmd(pattern="catb ?(.*)$")
