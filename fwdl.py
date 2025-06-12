@@ -8,8 +8,8 @@
 ✘ **Download Forward restricted files!**
 
 • **CMD:**
->  `{i}fwdl <msg_link>`
->  `{i}fwdl https://t.me/nofwd/14`
+>  `{i}fdl <msg_link>`
+>  `{i}fdl https://t.me/nofwd/14`
 """
 
 import os
@@ -24,12 +24,13 @@ from . import LOGS, time_formatter, downloader, random_string
 from plugins.downloadupload import process_video
 
 
-# Source: https://github.com/UsergeTeam/Userge/blob/7eef3d2bec25caa53e88144522101819cb6cb649/userge/plugins/misc/download.py#L76
+# Source: https://github.com/UsergeTeam/Userge/blob/master/userge/plugins/misc/download.py
 REGEXA = r"^(?:(?:https|tg):\/\/)?(?:www\.)?(?:t\.me\/|openmessage\?)(?:(?:c\/(\d+))|(\w+)|(?:user_id\=(\d+)))(?:\/|&message_id\=)(\d+)(?:\?single)?$"
 DL_DIR = "resources/downloads"
 
 
 def rnd_filename(path):
+    """Generate a random filename while preserving extension"""
     if not os.path.exists(path):
         return path
     spl = os.path.splitext(path)
@@ -37,12 +38,28 @@ def rnd_filename(path):
     return spl[0] + rnd + spl[1]
 
 
+def ensure_directory():
+    """Ensure download directory exists"""
+    os.makedirs(DL_DIR, exist_ok=True)
+
+
+async def cleanup_file(file_path):
+    """Clean up downloaded file"""
+    try:
+        if os.path.exists(file_path):
+            os.remove(file_path)
+    except Exception as e:
+        LOGS.error(f"Error cleaning up file {file_path}: {e}")
+
+
 @ultroid_cmd(
     pattern="fdl(?: |$)((?:.|\n)*)",
 )
 async def fwd_dl(e):
+    ensure_directory()
     ghomst = await e.eor("`checking...`")
     args = e.pattern_match.group(1)
+    
     if not args:
         reply = await e.get_reply_message()
         if reply and reply.text:
@@ -52,13 +69,14 @@ async def fwd_dl(e):
     
     remgx = re.findall(REGEXA, args)
     if not remgx:
-        return await ghomst.edit("`probably a invalid Link !?`")
+        return await ghomst.edit("`Probably an invalid Link!`")
 
     try:
         chat, id = [i for i in remgx[0] if i]
-        channel = int(chat) if chat.isdigit() else chat
         if chat.isdigit():
-        	channel = f"{-100}{channel}"
+            channel = int(f"-100{chat}")
+        else:
+            channel = chat
         msg_id = int(id)
     except Exception as ex:
         return await ghomst.edit("`Give a valid tg link to proceed`")
@@ -68,31 +86,48 @@ async def fwd_dl(e):
     except Exception as ex:
         return await ghomst.edit(f"**Error:**  `{ex}`")
 
-    start_ = datetime.now()
-    if (msg and msg.media) and hasattr(msg.media, "photo"):
-        dls = await e.client.download_media(msg, DL_DIR)
-    elif (msg and msg.media) and hasattr(msg.media, "document"):
-        fn = msg.file.name or f"{channel}_{msg_id}{msg.file.ext}"
-        filename = os.path.join(DL_DIR, fn)
-        try:
-            dlx = await downloader(
-                filename,
-                msg.document,
-                ghomst,
-                time.time(),
-                f"Downloading {filename}...",
-            )
-            dls = dlx.name
-        except MessageNotModifiedError as err:
-            LOGS.exception(err)
-            return await xx.edit(str(err))
-    else:
+    if not msg or not msg.media:
         return await ghomst.edit("`Message doesn't contain any media to download.`")
 
-    end_ = datetime.now()
-    ts = time_formatter(((end_ - start_).seconds) * 1000)
-    caption = f"**Uploaded:**\n`{os.path.basename(dls)}`"
-    await ghomst.edit(f"**Downloaded in {ts} !!**\n » `{dls}`\n\n⬆️ __Uploading Now__")
-    await process_video(dls, DL_DIR, caption, e)
-    await ghomst.delete()
-    
+    start_ = datetime.now()
+    dls = None
+
+    try:
+        if hasattr(msg.media, "photo"):
+            dls = await e.client.download_media(msg, DL_DIR)
+        elif hasattr(msg.media, "document"):
+            fn = msg.file.name or f"{channel}_{msg_id}{msg.file.ext}"
+            filename = os.path.join(DL_DIR, fn)
+            # filename = rnd_filename(filename)  # Ensure unique filename
+            
+            try:
+                dlx = await downloader(
+                    filename,
+                    msg.document,
+                    ghomst,
+                    time.time(),
+                    f"Downloading {os.path.basename(filename)}...",
+                )
+                dls = dlx.name
+            except MessageNotModifiedError as err:
+                LOGS.exception(err)
+                await ghomst.edit(str(err))
+                return
+
+        if not dls:
+            return await ghomst.edit("`Download failed!`")
+
+        end_ = datetime.now()
+        ts = time_formatter(((end_ - start_).seconds) * 1000)
+        caption = f"**Uploaded:**\n`{os.path.basename(dls)}`"
+        
+        await ghomst.edit(f"**Downloaded in {ts} !!**\n » `{dls}`\n\n⬆️ __Uploading Now__")
+        await process_video(dls, DL_DIR, caption, e)
+        
+    except Exception as ex:
+        await ghomst.edit(f"**Error during processing:**\n`{str(ex)}`")
+        LOGS.exception(ex)
+    finally:
+        if dls:
+            await cleanup_file(dls)
+        await ghomst.delete()
