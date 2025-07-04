@@ -1,11 +1,11 @@
 # Ultroid plugin to fetch cat images or gifs from cataas.com
 # Author: @NEOMATRIX90
 
-import aiohttp
-import os
 import io
+import os
 import tempfile
 
+import aiohttp
 from pyUltroid.fns.misc import unsavegif
 
 CAT_IMG_API = "https://cataas.com/cat"
@@ -25,7 +25,9 @@ async def cat_cmd(event):
         if num < 1:
             return await event.eor("❌ Number must be at least 1.", 5)
         if num > 10:
-            return await event.eor("⚠️ Maximum 10 items allowed due to Telegram limits.", 5)
+            return await event.eor(
+                "⚠️ Maximum 10 items allowed due to Telegram limits.", 5
+            )
     except ValueError:
         return await event.eor("❌ Invalid number.", 5)
 
@@ -36,10 +38,10 @@ async def cat_cmd(event):
                 async with session.get(f"{api_url}") as resp:
                     if resp.status == 200:
                         data = await resp.read()
-                        
+
                         file_obj = io.BytesIO(data)
                         file_obj.name = f"cat{'.gif' if is_gif else '.jpg'}"
-                        
+
                         sent = await event.client.send_file(
                             event.chat_id,
                             file=file_obj,
@@ -67,21 +69,27 @@ async def cat_cmd(event):
                         if resp.status == 200:
                             raw = await resp.read()
                             ext = ".gif" if is_gif else ".jpg"
-                            path = os.path.join(temp_dir, f"cat_{i+1}{ext}")
+                            path = os.path.join(temp_dir, f"cat_{i + 1}{ext}")
                             with open(path, "wb") as f:
                                 f.write(raw)
                             files.append(path)
                         else:
-                            return await event.eor(f"❌ Failed to fetch media #{i+1}", 5)
+                            return await event.eor(
+                                f"❌ Failed to fetch media #{i + 1}", 5
+                            )
                 except Exception as e:
-                    return await event.eor(f"🚫 Error fetching media #{i+1}: {e}", 5)
+                    return await event.eor(f"🚫 Error fetching media #{i + 1}: {e}", 5)
 
         try:
             sent = await event.client.send_file(
                 event.chat_id,
                 file=files,
-                caption="😺 **__Bunch of Pussies!__** 😺\n🐈 **__meyaoooooooooo__** 🐈" if not is_gif else "🐅️ **__Cat bomb incoming!__** 🐅\n**__meyaoooooooooo__**",
-                reply_to=event.reply_to_msg_id
+                caption=(
+                    "😺 **__Bunch of Pussies!__** 😺\n🐈 **__meyaoooooooooo__** 🐈"
+                    if not is_gif
+                    else "🐅️ **__Cat bomb incoming!__** 🐅\n**__meyaoooooooooo__**"
+                ),
+                reply_to=event.reply_to_msg_id,
                 # force_document=is_gif,
             )
 
