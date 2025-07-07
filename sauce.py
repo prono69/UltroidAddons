@@ -7,6 +7,7 @@ TRACE_API = "https://api.trace.moe/search"
 ANILIST_API = "https://graphql.anilist.co"
 # TRACE_KEY = "your_trace_moe_key_here"  # Optional
 
+
 @ultroid_cmd(pattern="sauce$")
 async def sauce_upload(event):
     reply = await event.get_reply_message()
@@ -17,8 +18,10 @@ async def sauce_upload(event):
 
     try:
         # Download file into memory and get MIME type
-        mime = reply.document.mime_type if reply.document else (
-            "image/jpeg" if reply.photo else None
+        mime = (
+            reply.document.mime_type
+            if reply.document
+            else ("image/jpeg" if reply.photo else None)
         )
         if not mime:
             return await event.eor("❌ Could not detect MIME type.", 7)
@@ -26,7 +29,7 @@ async def sauce_upload(event):
         file = await event.client.download_media(reply, file=bytes)
         headers = {"Content-Type": mime}
         # if TRACE_KEY:
-            # headers["x-trace-key"] = TRACE_KEY
+        # headers["x-trace-key"] = TRACE_KEY
 
         async with aiohttp.ClientSession() as session:
             async with session.post(TRACE_API, data=file, headers=headers) as resp:
@@ -57,8 +60,7 @@ async def sauce_upload(event):
 
         if video:
             await event.client.send_file(
-                event.chat_id, video + "&size=l",
-                caption=caption, reply_to=reply.id
+                event.chat_id, video + "&size=l", caption=caption, reply_to=reply.id
             )
             return await msg.delete()
 
@@ -66,6 +68,7 @@ async def sauce_upload(event):
 
     except Exception as e:
         await event.eor(f"❌ Error: `{str(e)}`", 7)
+
 
 async def get_anilist_info(anilist_id):
     query = """
@@ -86,9 +89,14 @@ async def get_anilist_info(anilist_id):
         ) as resp:
             res = await resp.json()
             titles = res["data"]["Media"]["title"]
-            return ", ".join(filter(None, [titles.get("romaji"), titles.get("english"), titles.get("native")]))
+            return ", ".join(
+                filter(
+                    None,
+                    [titles.get("romaji"), titles.get("english"), titles.get("native")],
+                )
+            )
 
 
 def format_time(seconds):
     s = int(seconds)
-    return f"{s//3600:02}:{(s%3600)//60:02}:{s%60:02}"
+    return f"{s // 3600:02}:{(s % 3600) // 60:02}:{s % 60:02}"

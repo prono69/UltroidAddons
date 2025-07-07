@@ -3,6 +3,7 @@
 # Author: @NEOMATRIX90
 
 import asyncio
+
 from jokeapi import Jokes
 
 CATEGORY_ALIASES = {
@@ -12,8 +13,9 @@ CATEGORY_ALIASES = {
     "p": "Pun",
     "s": "Spooky",
     "c": "Christmas",
-    "a": "Any"
+    "a": "Any",
 }
+
 
 @ultroid_cmd(pattern="jk(?:\s+(\d+)?(?:\s+(.*))?)?")
 async def _joke(event):
@@ -43,10 +45,12 @@ async def _joke(event):
 
     try:
         j = await Jokes()
-        data = await j.get_joke(category=categories, amount=count, joke_type='single')
+        data = await j.get_joke(category=categories, amount=count, joke_type="single")
 
         if data.get("error"):
-            return await event.eor("❌ Failed to fetch jokes. Try different categories or count.", 7)
+            return await event.eor(
+                "❌ Failed to fetch jokes. Try different categories or count.", 7
+            )
 
         # Normalize single joke vs multiple
         if "jokes" in data:
