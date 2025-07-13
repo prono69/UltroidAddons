@@ -11,6 +11,7 @@ import asyncio
 import aiohttp
 import aiofiles
 import os
+import re
 import requests
 from . import ultroid_cmd
 
@@ -36,6 +37,22 @@ def format_number(num):
 
 def truncate_text(text: str, limit: int = 300) -> str:
     return text if len(text) <= limit else f"{text[:limit].rstrip()}..."
+    
+    
+def extract_slug_from_url(url):
+    """
+    Extracts the last part of a URL, removes the trailing hyphen and number,
+    and replaces remaining hyphens with spaces.
+    Example: https://hanime.tv/videos/hentai/iribitari-gal-ni-manko-tsukawasete-morau-hanashi-1
+             -> iribitari gal ni manko tsukawasete morau hanashi
+    """
+    # Get the last part of the URL after the final slash
+    last_part = url.rstrip('/').split('/')[-1]
+    # Remove trailing hyphen and number (e.g., -1, -2, etc.)
+    slug = re.sub(r'-\d+$', '', last_part)
+    # Replace remaining hyphens with spaces
+    slug = slug.replace('-', ' ')
+    return slug    
 
 
 async def download_file(url: str, save_path: str):
@@ -58,6 +75,9 @@ async def hanime_search(event):
     if event.is_reply and not query:
         reply = await event.get_reply_message()
         query = reply.text
+        
+    if query.startswith('http://') or query.startswith('https://'):
+    	query = extract_slug_from_url(query)
 
     if not query:
         return await event.eor("`Please provide a search query.`", 5)
