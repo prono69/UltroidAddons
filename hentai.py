@@ -6,17 +6,33 @@
 """
 
 import os
-
 import aiofiles
 import requests
 from addons.shen import format_number
 
 
-@ultroid_cmd(pattern="hen$")
+@ultroid_cmd(pattern="hen(?: |$)(.*)")
 async def hentai_trend(event):
-    kk = await event.eor("__Fetching top trending hentai of the week...__")
+    # Get the time period from the command (default to "week")
+    time_period = event.pattern_match.group(1).strip().lower() or "week"
+    
+    # Validate time period
+    valid_periods = ["day", "week", "month", "year"]
+    if time_period not in valid_periods:
+        await event.eor(f"Invalid time period! Use one of: {', '.join(valid_periods)}")
+        return
+    
+    period_display = {
+        "day": "24 Hours",
+        "week": "Week",
+        "month": "Month",
+        "year": "Year"
+    }.get(time_period, "Week")
+    
+    kk = await event.eor(f"__Fetching top trending hentai of the {period_display.lower()}...__")
+    
     try:
-        res = requests.get("https://xyz69-hanime-api.hf.space/trending/week")
+        res = requests.get(f"https://htv-api.vercel.app/trending/{time_period}?limit=10")
         res.raise_for_status()
 
         json_data_ = res.json()
@@ -25,18 +41,18 @@ async def hentai_trend(event):
         if not json_data or len(json_data) == 0:
             return await kk.edit("No data found", time=5)
 
-        # Get the top 8 trending hentai
+        # Get the top 5 trending hentai
         top_trending = json_data[:5]
 
         # Prepare the media group (album) and the caption details
         media_group = []
-        caption_message = "🔥 **Top 5 Trending Hentai of the Week** 🔥\n\n"
+        caption_message = f"🔥 **Top 5 Trending Hentai of the {period_display}** 🔥\n\n"
 
         for index, data in enumerate(top_trending, 1):
             message_part = (
                 f"**{index}.** `{data['name']}`\n"
                 f"   - **📎 Link:** __https://hanime.tv/videos/hentai/{data['slug']}__\n"
-                f"   - **👁️ Views:** __{format_number(data['views'])}__\n\n"
+                f"   - **👁️ Views:** `{format_number(data['views'])}`\n\n"
             )
             caption_message += message_part
 

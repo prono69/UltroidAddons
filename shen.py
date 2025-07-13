@@ -13,9 +13,8 @@ import aiofiles
 import os
 import re
 import requests
-from . import ultroid_cmd
 
-API_URL = "https://xyz69-hanime.hf.space/search?query="
+API_URL = "https://api-hanime-two.vercel.app/search?query="
 
 
 def format_number(num):
