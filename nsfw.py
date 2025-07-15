@@ -25,7 +25,7 @@ from random import choice
 import aiofiles
 import aiohttp
 import requests
-from telethon.errors import PhotoSaveFileInvalidError, WebpageCurlFailedError
+from telethon.errors import PhotoSaveFileInvalidError
 
 from . import ultroid_cmd
 

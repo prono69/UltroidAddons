@@ -2,7 +2,6 @@
 # Ultroid plugin to get jokes using JokeAPI with shorthand categories
 # Author: @NEOMATRIX90
 
-import asyncio
 
 from jokeapi import Jokes
 

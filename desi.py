@@ -4,8 +4,6 @@
 • `{i}ide <any number>`
     __Download a desi video.__
 """
-
-import os
 from pathlib import Path
 
 import wget

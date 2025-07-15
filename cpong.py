@@ -1,9 +1,6 @@
-import asyncio
-import random
 import time
 import requests
 from random import choice
-from datetime import datetime as dt
 from . import start_time, ultroid_bot, inline_mention, time_formatter
 
 PING_DISABLE_NONPREM = {}

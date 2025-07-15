@@ -15,7 +15,6 @@
 import os
 import re
 import time
-import asyncio
 from datetime import datetime
 
 from telethon.errors.rpcerrorlist import MessageNotModifiedError

@@ -1,15 +1,9 @@
-import os
 from collections import deque
 from io import BytesIO
-
-import requests
 
 from . import (
     LOGS,
     async_searcher,
-    check_filename,
-    download_file,
-    run_async,
     udB,
     ultroid_cmd,
 )

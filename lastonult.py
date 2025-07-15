@@ -12,7 +12,6 @@ import html
 
 import motor.motor_asyncio
 import pytz
-from telethon import events, types
 from telethon.tl.functions.channels import GetParticipantsRequest
 from telethon.tl.types import (
     ChannelParticipantsSearch,
