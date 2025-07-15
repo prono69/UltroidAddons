@@ -8,7 +8,6 @@ Usage:
 
 import os
 import urllib.parse
-from io import BytesIO
 
 import requests
 

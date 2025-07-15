@@ -31,7 +31,7 @@ import random
 import requests
 from telethon.errors.rpcerrorlist import MessageIdInvalidError
 
-from . import ultroid_bot, ultroid_cmd
+from . import ultroid_cmd
 
 
 class WaifuApiUrl:

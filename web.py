@@ -7,7 +7,7 @@ from io import BytesIO
 
 import aiohttp
 
-from . import LOGS, check_filename, get_string, run_async, udB, ultroid_cmd
+from . import LOGS, get_string, ultroid_cmd
 
 
 def html2md(text):

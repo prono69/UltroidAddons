@@ -25,10 +25,7 @@
     __Search songs from Apple Music.__
 """
 
-import asyncio
-import os
 import re
-import time
 
 import requests
 from lyricsgenius import Genius

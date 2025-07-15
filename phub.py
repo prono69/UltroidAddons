@@ -17,7 +17,6 @@ import logging
 import os
 import random
 import shutil
-from os import remove, system
 
 import aiofiles
 from pyUltroid.fns.nsfw import PornoHub

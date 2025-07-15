@@ -2,13 +2,10 @@
 # ©️ @NeoMatrix90
 
 import asyncio
-import mimetypes
 import os
-from pathlib import Path
 
 import aiohttp
 from pyUltroid.fns.helper import reply_id
-from telethon import events
 from waifu_python import Danbooru, RandomWaifu
 
 TEMP_DIR = "./downloads/nsfw_temp/"

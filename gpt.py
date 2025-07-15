@@ -1,15 +1,9 @@
-import os
 from collections import deque
 from io import BytesIO
-
-import requests
 
 from . import (
     LOGS,
     async_searcher,
-    check_filename,
-    download_file,
-    run_async,
     udB,
     ultroid_cmd,
 )
@@ -66,7 +60,7 @@ async def openai_chat_gpt(e):
             f"**Error while requesting data from OpenAI:** \n> `{exc}`"
         )
 
-    LOGS.debug(f'Token Used on ({query}) > {request["usage"]["completion_tokens"]}')
+    LOGS.debug(f"Token Used on ({query}) > {request['usage']['completion_tokens']}")
 
     # Truncate query to 400 characters
     truncated_query = query[:400]

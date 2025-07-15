@@ -16,7 +16,6 @@ import os
 
 import google.generativeai as genai
 import PIL
-from google.generativeai.types import HarmBlockThreshold, HarmCategory
 
 from . import HNDLR, udB, ultroid_cmd
 

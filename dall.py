@@ -1,10 +1,9 @@
 import json
-import os
-from os import remove, system
+from os import remove
 
 import aiohttp
 
-from . import check_filename, fast_download, ultroid_cmd
+from . import check_filename, ultroid_cmd
 
 
 async def paal_image(prompt):

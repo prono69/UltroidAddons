@@ -9,7 +9,7 @@ import os
 
 import requests
 
-from . import run_async, ultroid_cmd
+from . import ultroid_cmd
 
 url = "https://ios-app.heypi.com/api/chat"
 headers = {

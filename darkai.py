@@ -18,7 +18,7 @@ from collections import deque
 
 import requests
 
-from . import LOGS, run_async, ultroid_cmd
+from . import LOGS, ultroid_cmd
 
 darkai_chat_history_SIZE = 80
 

@@ -7,8 +7,6 @@
     __Downloads facebook video using API.__
 """
 
-import os
-
 import aiofiles
 import requests
 import wget
