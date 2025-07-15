@@ -24,6 +24,7 @@
 • `{i}aplm <search query>`
     __Search songs from Apple Music.__
 """
+
 import re
 
 import requests

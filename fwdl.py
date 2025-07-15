@@ -1,7 +1,7 @@
 # < Source - t.me/testingpluginnn >
 # < Made for Ultroid by @Spemgod! >
 # < https://github.com/TeamUltroid/Ultroid >
-# 
+#
 # 'TG Regex taken from @TheUserge'
 
 """
@@ -17,11 +17,10 @@ import re
 import time
 from datetime import datetime
 
+from plugins.downloadupload import process_video
 from telethon.errors.rpcerrorlist import MessageNotModifiedError
 
-from . import LOGS, time_formatter, downloader, random_string
-from plugins.downloadupload import process_video
-
+from . import LOGS, downloader, random_string, time_formatter
 
 # Source: https://github.com/UsergeTeam/Userge/blob/master/userge/plugins/misc/download.py
 REGEXA = r"^(?:(?:https|tg):\/\/)?(?:www\.)?(?:t\.me\/|openmessage\?)(?:(?:c\/(\d+))|(\w+)|(?:user_id\=(\d+)))(?:\/|&message_id\=)(\d+)(?:\?single)?$"
@@ -58,14 +57,14 @@ async def fwd_dl(e):
     ensure_directory()
     ghomst = await e.eor("`checking...`")
     args = e.pattern_match.group(1)
-    
+
     if not args:
         reply = await e.get_reply_message()
         if reply and reply.text:
             args = reply.message
         else:
             return await eod(ghomst, "Give a tg link to download", time=10)
-    
+
     remgx = re.findall(REGEXA, args)
     if not remgx:
         return await ghomst.edit("`Probably an invalid Link!`")
@@ -98,7 +97,7 @@ async def fwd_dl(e):
             fn = msg.file.name or f"{channel}_{msg_id}{msg.file.ext}"
             filename = os.path.join(DL_DIR, fn)
             # filename = rnd_filename(filename)  # Ensure unique filename
-            
+
             try:
                 dlx = await downloader(
                     filename,
@@ -119,10 +118,12 @@ async def fwd_dl(e):
         end_ = datetime.now()
         ts = time_formatter(((end_ - start_).seconds) * 1000)
         caption = f"**Uploaded:**\n`{os.path.basename(dls)}`"
-        
-        await ghomst.edit(f"**Downloaded in {ts} !!**\n » `{dls}`\n\n⬆️ __Uploading Now__")
+
+        await ghomst.edit(
+            f"**Downloaded in {ts} !!**\n » `{dls}`\n\n⬆️ __Uploading Now__"
+        )
         await process_video(dls, DL_DIR, caption, e)
-        
+
     except Exception as ex:
         await ghomst.edit(f"**Error during processing:**\n`{str(ex)}`")
         LOGS.exception(ex)

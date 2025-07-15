@@ -60,7 +60,7 @@ async def openai_chat_gpt(e):
             f"**Error while requesting data from OpenAI:** \n> `{exc}`"
         )
 
-    LOGS.debug(f'Token Used on ({query}) > {request["usage"]["completion_tokens"]}')
+    LOGS.debug(f"Token Used on ({query}) > {request['usage']['completion_tokens']}")
 
     # Truncate query to 400 characters
     truncated_query = query[:400]
