@@ -6,6 +6,7 @@
 """
 
 import os
+
 import aiofiles
 import requests
 from addons.shen import format_number
@@ -15,24 +16,28 @@ from addons.shen import format_number
 async def hentai_trend(event):
     # Get the time period from the command (default to "week")
     time_period = event.pattern_match.group(1).strip().lower() or "week"
-    
+
     # Validate time period
     valid_periods = ["day", "week", "month", "year"]
     if time_period not in valid_periods:
         await event.eor(f"Invalid time period! Use one of: {', '.join(valid_periods)}")
         return
-    
+
     period_display = {
         "day": "24 Hours",
         "week": "Week",
         "month": "Month",
-        "year": "Year"
+        "year": "Year",
     }.get(time_period, "Week")
-    
-    kk = await event.eor(f"__Fetching top trending hentai of the {period_display.lower()}...__")
-    
+
+    kk = await event.eor(
+        f"__Fetching top trending hentai of the {period_display.lower()}...__"
+    )
+
     try:
-        res = requests.get(f"https://htv-api.vercel.app/trending/{time_period}?limit=10")
+        res = requests.get(
+            f"https://htv-api.vercel.app/trending/{time_period}?limit=10"
+        )
         res.raise_for_status()
 
         json_data_ = res.json()
