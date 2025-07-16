@@ -5,10 +5,10 @@ import asyncio
 import os
 
 import aiohttp
-from pyUltroid.fns.misc import unsavegif
 from pyUltroid.fns.helper import reply_id
-from waifu_python import Danbooru, RandomWaifu
+from pyUltroid.fns.misc import unsavegif
 from telethon.errors import PhotoSaveFileInvalidError
+from waifu_python import Danbooru, RandomWaifu
 
 TEMP_DIR = "./downloads/nsfw_temp/"
 os.makedirs(TEMP_DIR, exist_ok=True)
