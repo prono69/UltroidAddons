@@ -25,7 +25,7 @@ from random import choice
 import aiofiles
 import aiohttp
 import requests
-from telethon.errors import PhotoSaveFileInvalidError
+from telethon.errors import PhotoSaveFileInvalidError, WebpageCurlFailedError
 
 from . import ultroid_cmd
 
@@ -121,9 +121,12 @@ async def waifu_im(event):
             return await response_msg.edit(f"Error: {e}")
 
     if num_images == 1:
-        await event.client.send_file(
-            event.chat_id, images[0], caption=f"__**{query}**__", reply_to=reply_to
-        )
+        try:
+        	await event.client.send_file(event.chat_id, images[0], caption=f"__**{query}**__", reply_to=reply_to)
+        except PhotoSaveFileInvalidError:
+        	await event.client.send_file(event.chat_id, images[0], caption=f"__**{query}**__", force_document=True, reply_to=reply_to)
+        except WebpageCurlFailedError:
+        	return await event.eor("__Failed to get media from web. Webpage media empty (caused by SendMediaRequest)__", 7)
         await response_msg.delete()
     else:
         media_group = []

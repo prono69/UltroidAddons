@@ -5,8 +5,10 @@ import asyncio
 import os
 
 import aiohttp
+from pyUltroid.fns.misc import unsavegif
 from pyUltroid.fns.helper import reply_id
 from waifu_python import Danbooru, RandomWaifu
+from telethon.errors import PhotoSaveFileInvalidError
 
 TEMP_DIR = "./downloads/nsfw_temp/"
 os.makedirs(TEMP_DIR, exist_ok=True)
@@ -60,7 +62,7 @@ async def nsfw_images(event):
                     reply_to=reply_to,
                 )
                 return await event.delete()
-            except Exception:
+            except PhotoSaveFileInvalidError:
                 await event.client.send_file(
                     event.chat_id, images[0], force_document=True, reply_to=reply_to
                 )
@@ -96,7 +98,7 @@ async def nsfw_images(event):
                 force_document=is_force_doc,
             )
             await event.delete()
-        except Exception:
+        except PhotoSaveFileInvalidError:
             await event.client.send_file(
                 event.chat_id, file_paths, reply_to=reply_to, force_document=True
             )
@@ -142,14 +144,15 @@ async def nsfw_gifs(event):
         # Handle single GIF
         if limit == 1:
             try:
-                await event.client.send_file(
+                msg = await event.client.send_file(
                     event.chat_id,
                     gifs[0],
                     reply_to=reply_to,
                     force_document=is_force_doc,
                 )
+                await unsavegif(event, msg)
                 return await event.delete()
-            except:
+            except Exception:
                 await event.client.send_file(
                     event.chat_id, gifs[0], reply_to=reply_to, force_document=True
                 )
@@ -171,7 +174,7 @@ async def nsfw_gifs(event):
                         with open(file_path, "wb") as f:
                             f.write(data)
                         file_paths.append(file_path)
-                except:
+                except Exception:
                     continue
 
         if not file_paths:
@@ -184,16 +187,17 @@ async def nsfw_gifs(event):
                     event.chat_id, file_paths, reply_to=reply_to, force_document=True
                 )
                 await event.delete()
-            except:
+            except Exception:
                 await event.eor("❌ Failed to send GIFs as documents.", 7)
         else:
             # Send one-by-one (as GIFs/animations)
             for gif_path in file_paths:
                 try:
-                    await event.client.send_file(
+                    msg = await event.client.send_file(
                         event.chat_id, gif_path, reply_to=reply_to
                     )
-                except:
+                    await unsavegif(event, msg)
+                except Exception:
                     # fallback to sending all as docs if any fail
                     await event.client.send_file(
                         event.chat_id,
