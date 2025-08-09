@@ -14,6 +14,7 @@ import re
 import aiofiles
 import aiohttp
 import requests
+from . import ultroid_cmd
 
 API_URL = "https://api-hanime-two.vercel.app/search?query="
 
