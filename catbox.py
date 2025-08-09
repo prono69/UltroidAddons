@@ -10,12 +10,12 @@
 import os
 
 import aiohttp
-from pyUltroid.fns.misc import CatboxUploader
+from catbox import CatboxUploader
 
 from . import udB, ultroid_cmd
 
 userhash = udB.get_key("CATBOX") if udB.get_key("CATBOX") else ""
-uploader = CatboxUploader(userhash)
+uploader = CatboxUploader(userhash=userhash)
 
 async def upload_to_envs(file_path):
     url = "https://envs.sh"
