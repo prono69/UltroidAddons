@@ -1,16 +1,16 @@
 # Ultroid Userbot
 # <https://github.com/TeamUltroid/UltroidAddons/tree/main/imdb.py>
- 
+
 """
 Search movie details from IMDB
- 
+
 ✘ Commands Available
 • `{i}imdb <keyword>`
 """
- 
+
 from . import *
- 
- 
+
+
 @ultroid_cmd(pattern="imdb ?(.*)")
 async def imdb(e):
     m = await e.eor("`...`")
