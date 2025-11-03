@@ -23,6 +23,9 @@
 
 • `{i}aplm <search query>`
     __Search songs from Apple Music.__
+    
+• `{i}diz <search query>`
+    __Search songs from Deezer.__    
 """
 
 import re
@@ -43,9 +46,6 @@ from . import *
 BASE_URL = "https://delirius-apiofc.vercel.app"
 URL = f"{BASE_URL}/ia"
 NEX_API = udB.get_key("NEX_API")
-
-
-import requests
 
 
 async def search_music(api_url, format_function, message, query, params=None):
@@ -111,7 +111,7 @@ def format_apple_music_result(data):
 
 def format_deezer_result(data):
     result = ""
-    for item in data[:15]:  # Limit to 15 results
+    for item in data[:15]:
         result += f"🎵 **{item['title']}** by {item['artist']}\n"
         result += f"Duration: {item['duration']}\n"
         result += f"Rank: {item['rank']}\n"
@@ -205,7 +205,7 @@ async def lyrics_search(message):
         await message.eor("Usage: lyrics <song name>", 7)
         return
     await search_music(
-        f"{BASE_URL}/search/letra?query=", format_lyrics_result, message, query
+        f"{BASE_URL}/search/genius?q=", format_lyrics_result, message, query
     )
 
 
@@ -235,13 +235,13 @@ async def applemusic_search(message):
     )
 
 
-@ultroid_cmd(pattern="deezer ?(.*)$")
+@ultroid_cmd(pattern="diz ?(.*)$")
 async def deezer_search(message):
     input = message.pattern_match.group(1)
     reply = await message.get_reply_message()
     query = input if input else reply.text
     if not query:
-        await message.eor("Usage: applm <query>", 7)
+        await message.eor("Usage: diz <query>", 7)
         return
     await search_music(
         f"{BASE_URL}/search/deezer?q=", format_deezer_result, message, query

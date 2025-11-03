@@ -38,6 +38,9 @@ async def delirus_api(e, query):
     elif query == "lolip":
         url = CN_API + "pc?type=url"
         file_name = "lolipc_pic.png"
+    elif query == "lolipp":
+        url = CN_API + "pp?type=url"
+        file_name = "lolipp_pic.png"    
     elif query == "loli2":
         url = "https://weeb-api.vercel.app/loli"
         file_name = "loli2.jpg"
@@ -131,6 +134,9 @@ async def delirus_api(e, query):
     elif query == "milf":
         url = SHIZO_API + "sfw/milf?apikey=shizo"
         file_name = "milf.jpg"
+    elif query == "rns":
+        url = "https://api.deline.web.id/random/nsfw2"
+        file_name = "rnsfw.jpg"
     else:
         return await e.eor("`Invalid Query`", 5)
 
@@ -139,9 +145,9 @@ async def delirus_api(e, query):
         response = session.get(url, stream=True, timeout=60)
 
         if response.status_code == 200:
-            if query in ["loli", "lolip"]:
+            if query in ["loli", "lolip", "lolipp"]:
                 direct_image_url = response.text.strip()
-                direct_image_url = direct_image_url.replace(".com/", ".cn/")
+                # direct_image_url = direct_image_url.replace(".com/", ".cn/")
                 image_response = session.get(direct_image_url, stream=True, timeout=60)
 
                 if image_response.status_code == 200:
@@ -169,8 +175,8 @@ async def delirus_api(e, query):
                 6,
             )
 
-    except requests.exceptions.RequestException as e:
-        await e.eor(f"Request failed: `{e}`", 6)
+    except requests.exceptions.RequestException as ex:
+        await e.eor(f"Request failed: `{ex}`", 10)
 
 
 @ultroid_cmd(pattern="de ?(.*)$")
