@@ -1,10 +1,11 @@
 # sauce.py plugin for ultroid bot
 # Author: @NEOMATRIX90
 
-import requests
-import aiohttp
 import os
 import tempfile
+
+import aiohttp
+import requests
 
 TRACE_API = "https://api.trace.moe/search"
 ANILIST_API = "https://graphql.anilist.co"
@@ -28,9 +29,11 @@ async def sauce_local_upload(event):
 
         # Guess MIME
         mime_type = (
-            reply.document.mime_type if hasattr(reply, "document") and reply.document else
-            "image/jpeg" if reply.photo else
-            "application/octet-stream"
+            reply.document.mime_type
+            if hasattr(reply, "document") and reply.document
+            else "image/jpeg"
+            if reply.photo
+            else "application/octet-stream"
         )
 
         headers = {"Content-Type": mime_type}
@@ -73,7 +76,7 @@ async def sauce_local_upload(event):
                 video,
                 caption=caption,
                 buttons=buttons,
-                reply_to=reply.id
+                reply_to=reply.id,
             )
             return await msg.delete()
 
@@ -103,10 +106,13 @@ async def get_anilist_info(anilist_id):
             res = await resp.json()
             titles = res["data"]["Media"]["title"]
             return ", ".join(
-                filter(None, [titles.get("romaji"), titles.get("english"), titles.get("native")])
+                filter(
+                    None,
+                    [titles.get("romaji"), titles.get("english"), titles.get("native")],
+                )
             )
 
 
 def format_time(seconds):
     s = int(seconds)
-    return f"{s//3600:02}:{(s%3600)//60:02}:{s%60:02}"
+    return f"{s // 3600:02}:{(s % 3600) // 60:02}:{s % 60:02}"

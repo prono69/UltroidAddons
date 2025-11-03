@@ -40,7 +40,7 @@ async def delirus_api(e, query):
         file_name = "lolipc_pic.png"
     elif query == "lolipp":
         url = CN_API + "pp?type=url"
-        file_name = "lolipp_pic.png"    
+        file_name = "lolipp_pic.png"
     elif query == "loli2":
         url = "https://weeb-api.vercel.app/loli"
         file_name = "loli2.jpg"
