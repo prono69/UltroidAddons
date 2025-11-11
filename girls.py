@@ -20,17 +20,21 @@ zenkey = choice(f"{udB.get_key('ZEN_API')}".split(" "))
 @ultroid_cmd(pattern="gal ?(.*)$")
 async def girls(event):
     query = event.pattern_match.group(1).lower()
-    base_url = "https://api.agatz.xyz/api/"
+    base_url = "https://napi.ichigo.eu.org/random/"
 
     # Mapping of queries to API endpoints
     country_map = {
         "chi": "china",
         "indo": "indonesia",
-        "jap": "Japan",
+        "jap": "japan",
         "vit": "vietnam",
         "ko": "korea",
         "mal": "malaysia",
         "thai": "thailand",
+        "ce": "cecan",
+        "ce2": "cecan2",
+        "co": "cogan",
+        
     }
     
     if query == "-h":
@@ -68,7 +72,7 @@ async def girls(event):
 @ultroid_cmd(pattern="ngal ?(.*)$")
 async def girls(event):
     query = event.pattern_match.group(1).lower()
-    base_url = "https://api.ouzen.xyz/api/morensfw/"
+    base_url = "https://api.andaraz.com/api/morensfw/"
 
     # Mapping of queries to API endpoints
     country_map = {

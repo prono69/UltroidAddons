@@ -14,7 +14,7 @@ BASE = "https://delirius-apiofc.vercel.app/"
 CN_API = "https://www.loliapi.com/acg/"
 FG_API = "https://api.fgmods.xyz/api/"
 GURU_API = "https://guruapi.tech/api/rnsfw/"
-ZEN_API = "https://api.ouzen.xyz/api/"
+ZEN_API = "https://api.andaraz.com/api/"
 SHIZO_API = "https://shizoapi.onrender.com/api/"
 
 # Using a session for connection pooling
