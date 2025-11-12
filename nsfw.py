@@ -279,7 +279,7 @@ NSFW = [
     "withflowers",
     "withpetals",
     "wolfgirl",
-    "yuri"
+    "yuri",
 ]
 
 fantox_help = "**🔞 NSFW** :  "

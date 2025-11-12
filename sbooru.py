@@ -8,9 +8,10 @@
 import html
 import os
 import random
+from io import BytesIO
+
 import aiofiles
 import requests
-from io import BytesIO
 from aiohttp import ClientSession
 from telethon.errors import PhotoSaveFileInvalidError
 
@@ -54,7 +55,12 @@ class Post:
         return (
             self._json.get("file_url")
             or self._json.get("large_file_url")
-            or (self._json.get("source") if self._json.get("source") and "pximg" not in self._json.get("source", "") else await self.pximg)
+            or (
+                self._json.get("source")
+                if self._json.get("source")
+                and "pximg" not in self._json.get("source", "")
+                else await self.pximg
+            )
         )
 
     @property
@@ -80,7 +86,9 @@ async def sbooru(message):
     try:
         query = message.pattern_match.group(1).strip()
         if not query:
-            return await message.eor("`Give me something to search, e.g. waifu, maid, swimsuit...`")
+            return await message.eor(
+                "`Give me something to search, e.g. waifu, maid, swimsuit...`"
+            )
 
         # ---- Parse tags, limit, and nsfw flags ----
         parts = query.split()
@@ -140,7 +148,9 @@ async def sbooru(message):
         if limit == 1:
             ra = selected[0]
             img_url = await ra.image
-            caption_text = sanitize_caption(ra._json.get("tag_string_general") or "Untitled")
+            caption_text = sanitize_caption(
+                ra._json.get("tag_string_general") or "Untitled"
+            )
 
             try:
                 await message.client.send_file(
