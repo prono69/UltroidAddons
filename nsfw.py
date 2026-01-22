@@ -10,7 +10,7 @@
 ~ NSFW: `ass` `ecchi` `ero` `milf` `hentai` `oral` `paizuri`
 
 ~ VERSITILE: `maid` `marin-kitagawa` `mori-calliope` `oppai`
-     `raiden-shogun` `selfies` `uniform` `waifu`
+     `raiden-shogun` `selfies` `uniform` `waifu` `kamisato-ayaka`
 
 ✘ `{i}fan <count> or {i}fan -h (for list)`
     __Sends a NSFW image from the api.__
