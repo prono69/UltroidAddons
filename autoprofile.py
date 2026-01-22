@@ -62,7 +62,7 @@ async def autoname_(event):
         "Busy Today !",
         "ULTROID USER",
         "Enjoying Life!",
-        "Unique as Always!" "Sprinkling a bit of magic",
+        "Unique as Always!Sprinkling a bit of magic",
         "Intelligent !",
     ]
     while True:

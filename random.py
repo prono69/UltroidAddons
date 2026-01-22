@@ -4,12 +4,12 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
- 
+
 """
 ✘ Commands Available -
- 
+
 • `Get some Random Content.`
- 
+
 • `{i}random dog`
 • `{i}random duck`
 • `{i}random cat`
@@ -19,34 +19,35 @@
 • `{i}random car`
 • `{i}random celebrity`
 """
- 
-from bs4 import BeautifulSoup as bs
+
 import re
- 
+
+from bs4 import BeautifulSoup as bs
+
 from . import HNDLR, async_searcher, ultroid_cmd
- 
+
 # These Api's are Collected From
 # ---- https://github.com/public-apis/public-apis
- 
+
 API_LIST = {
     "cat": "https://aws.random.cat/meow",
     "dog": "https://random.dog/woof.json",
     "duck": "https://random-d.uk/api/random",
     "fox": "https://randomfox.ca/floof/",
-#   "funfact": "https://asli-fun-fact-api.herokuapp.com/",
+    #   "funfact": "https://asli-fun-fact-api.herokuapp.com/",
     "quote": "https://api.themotivate365.com/stoic-quote",
     "quotable": "http://api.quotable.io/random",
-#   "words": "https://random-word-api.herokuapp.com/word?number=10",
-#   "food": "https://foodish-api.herokuapp.com/api/",
+    #   "words": "https://random-word-api.herokuapp.com/word?number=10",
+    #   "food": "https://foodish-api.herokuapp.com/api/",
     "car": "https://forza-api.tk/",
 }
- 
+
 SCRAP_LIST = {
     "celebrity": "https://www.randomcelebritygenerator.com/",
     "word": "https://randomword.com/",
 }
- 
- 
+
+
 @ultroid_cmd(pattern="random ?(.*)")
 async def random_magic(event):
     if "randomuser" in event.text:
@@ -77,11 +78,13 @@ async def random_magic(event):
     elif match == "quote":
         text = f"**{req['data']['quote']}**\n\n~ {req['data']['author']}"
     elif match == "quotable":
-        text = f'`{req["content"]}`' + "~ `{req['author']}`"
+        text = f"`{req['content']}`" + "~ `{req['author']}`"
     elif match == "word":
         req = req.decode("utf-8")
         word = re.search(r'<div id="random_word">([^<]+)</div>', req).group(1)
-        definition = re.search(r'<div id="random_word_definition">([^<]*)</div>', req).group(1)
+        definition = re.search(
+            r'<div id="random_word_definition">([^<]*)</div>', req
+        ).group(1)
         text = f"**Random Word**\n- `{word}` : `{definition}`"
     elif match == "words":
         text = "**• Random Words**\n\n"

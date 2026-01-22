@@ -9,10 +9,11 @@ Usage:
 
 import os
 import time
-import aiohttp
-import aiofiles
-from . import ultroid_cmd
 
+import aiofiles
+import aiohttp
+
+from . import ultroid_cmd
 
 SEARCH_API = "https://delirius-apiofc.vercel.app/search/spotify?q="
 DOWNLOAD_API = "https://delirius-apiofc.vercel.app/download/spotifydl?url="
@@ -63,7 +64,9 @@ async def spotify_download(event):
             return await status.edit(f"**Error:** API connection failed.\n`{e}`")
 
         if not data.get("status"):
-            return await status.edit("⚠️ This track is unavailable or cannot be downloaded.")
+            return await status.edit(
+                "⚠️ This track is unavailable or cannot be downloaded."
+            )
 
         dl_info = data["data"]
         song_title = dl_info.get("title", "Unknown Title")
@@ -89,7 +92,9 @@ async def spotify_download(event):
         artist = song.get("artist", "Unknown Artist")
         song_url = song.get("url")
 
-        await status.edit(f"✅ Found: **{song_title}** by **{artist}**\nFetching download link...")
+        await status.edit(
+            f"✅ Found: **{song_title}** by **{artist}**\nFetching download link..."
+        )
 
         try:
             async with aiohttp.ClientSession() as session:
@@ -115,7 +120,9 @@ async def spotify_download(event):
         or not download_url.startswith("http")
         or "undefined" in download_url
     ):
-        return await status.edit("⚠️ Invalid or unavailable download link. Try another song.")
+        return await status.edit(
+            "⚠️ Invalid or unavailable download link. Try another song."
+        )
 
     song_file = f"{song_title}.mp3"
     thumb_file = f"{song_title}.jpg"
@@ -133,7 +140,9 @@ async def spotify_download(event):
 
             # Download song audio
             async with session.get(download_url) as resp:
-                if resp.status != 200 or "audio" not in resp.headers.get("Content-Type", ""):
+                if resp.status != 200 or "audio" not in resp.headers.get(
+                    "Content-Type", ""
+                ):
                     raise Exception("Invalid audio data.")
                 async with aiofiles.open(song_file, "wb") as f:
                     await f.write(await resp.read())
@@ -153,7 +162,9 @@ async def spotify_download(event):
                 f"[Open in Spotify]({spotify_link})"
             ),
             thumb=thumb_file if os.path.exists(thumb_file) else None,
-            progress_callback=lambda c, t: progress(c, t, status, c_time, f"📤 Uploading **{song_title}**..."),
+            progress_callback=lambda c, t: progress(
+                c, t, status, c_time, f"📤 Uploading **{song_title}**..."
+            ),
             parse_mode="md",
         )
     except Exception as e:

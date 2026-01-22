@@ -8,9 +8,11 @@
 import asyncio
 import io
 import os
-import aiohttp
+
 import aiofiles
+import aiohttp
 from PIL import Image
+
 from . import ultroid_cmd
 
 SEARCH_API = "https://api.nekolabs.web.id/discovery/pinterest/search?q="
@@ -66,10 +68,7 @@ async def pinterest_handler(event):
 
     if not args:
         return await event.eor(
-            "Usage:\n"
-            "`.pint <number> <query>`\n"
-            "or\n"
-            "`.pint <Pinterest link>`"
+            "Usage:\n`.pint <number> <query>`\nor\n`.pint <Pinterest link>`"
         )
 
     query = " ".join(args)
@@ -143,10 +142,12 @@ async def pinterest_handler(event):
         async with semaphore:
             img = await download_image(u)
             if img:
-                img.name = f"{query.replace(' ', '_')}_{idx+1}.jpg"
+                img.name = f"{query.replace(' ', '_')}_{idx + 1}.jpg"
             return img
 
-    downloaded = await asyncio.gather(*[safe_download(u, i) for i, u in enumerate(urls)])
+    downloaded = await asyncio.gather(
+        *[safe_download(u, i) for i, u in enumerate(urls)]
+    )
     images = [i for i in downloaded if i]
 
     if not images:
@@ -156,7 +157,7 @@ async def pinterest_handler(event):
 
     # --- Send in albums (groups of 10) ---
     for i in range(0, len(images), 10):
-        batch = images[i:i + 10]
+        batch = images[i : i + 10]
         try:
             await event.client.send_file(
                 event.chat_id,

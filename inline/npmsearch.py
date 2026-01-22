@@ -20,7 +20,7 @@ async def search_npm(event):
         )
         return
     data = await async_searcher(
-        f"https://registry.npmjs.com/-/v1/search?text={query.replace(' ','+')}&size=7",
+        f"https://registry.npmjs.com/-/v1/search?text={query.replace(' ', '+')}&size=7",
         re_json=True,
     )
     res = []

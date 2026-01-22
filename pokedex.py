@@ -108,13 +108,13 @@ async def pokedex(event):
 **WEIGHT** : `{weight}`
  
     **Stats**                               **Moves**
-**Hp**      : `{Stats['hp']}`               `(1){move1}`
-**Attack**  : `{Stats['attack']}`           `(2){move2}`
-**Defense** : `{Stats['defense']}`          `(3){move3}`
-**Sp_atk**  : `{Stats['sp_atk']}`           `(4){move4}`
-**Sp_def**  : `{Stats['sp_def']}`           `(5){move5}`
-**Speed**   : `{Stats['speed']}`            `(6){move6}`
-**Total**   : `{Stats['total']}`            `(7){move7}`
+**Hp**      : `{Stats["hp"]}`               `(1){move1}`
+**Attack**  : `{Stats["attack"]}`           `(2){move2}`
+**Defense** : `{Stats["defense"]}`          `(3){move3}`
+**Sp_atk**  : `{Stats["sp_atk"]}`           `(4){move4}`
+**Sp_def**  : `{Stats["sp_def"]}`           `(5){move5}`
+**Speed**   : `{Stats["speed"]}`            `(6){move6}`
+**Total**   : `{Stats["total"]}`            `(7){move7}`
 **DESCRIPTION** : `{description}`
   """
     await event.client.send_file(event.chat_id, lst, caption=cap)
