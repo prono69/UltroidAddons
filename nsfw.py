@@ -36,6 +36,7 @@ ISFW = [
     "mori-calliope",
     "oppai",
     "raiden-shogun",
+    "genshin-impact",
     "selfies",
     "uniform",
     "waifu",
@@ -90,14 +91,14 @@ async def waifu_im(event):
         )
 
     # Construct the API URL
-    base_url = "https://api.waifu.im/search/"
+    base_url = "https://api.waifu.im/images/"
     params = {
-        "is_nsfw": str(is_nsfw).lower(),
+        "IsNsfw": str(is_nsfw).lower(),
     }
     if num_images > 1:
-        params["limit"] = num_images
+        params["PageSize"] = num_images
     if query != "random":
-        params["included_tags"] = query
+        params["IncludedTags"] = query
 
     # Fetch data from API
     response_msg = await event.eor(f"__Fetching {num_images} {query} images...__")
@@ -110,7 +111,8 @@ async def waifu_im(event):
                     )
 
                 data = await resp.json()
-                images = [img["url"] for img in data.get("images", [])]
+                items = data.get("items", [])
+                images = [item.get("url") for item in items if item.get("url")]
 
                 if not images:
                     return await response_msg.edit(
