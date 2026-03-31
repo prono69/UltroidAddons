@@ -43,7 +43,7 @@ from telethon.tl.types import InputMessagesFilterMusic as filtermus
 from . import *
 
 # API URLs
-BASE_URL = "https://delirius-apiofc.vercel.app"
+BASE_URL = "https://api.delirius.store"
 URL = f"{BASE_URL}/ia"
 NEX_API = udB.get_key("NEX_API")
 

@@ -14,7 +14,7 @@ from PIL import Image
 from . import ultroid_cmd
 
 SEARCH_API = "https://api.nekolabs.web.id/discovery/pinterest/search?q="
-DOWNLOAD_API = "https://delirius-apiofc.vercel.app/download/pinterestdl?url="
+DOWNLOAD_API = "https://api.delirius.store/download/pinterestdl?url="
 
 
 # --- Resize large images ---

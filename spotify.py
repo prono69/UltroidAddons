@@ -14,8 +14,8 @@ import aiofiles
 from . import ultroid_cmd
 
 
-SEARCH_API = "https://delirius-apiofc.vercel.app/search/spotify?q="
-DOWNLOAD_API = "https://delirius-apiofc.vercel.app/download/spotifydl?url="
+SEARCH_API = "https://api.delirius.store/search/spotify?q="
+DOWNLOAD_API = "https://api.delirius.store/download/spotifydl?url="
 
 
 # --- Optional: progress indicator ---
