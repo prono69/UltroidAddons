@@ -241,9 +241,9 @@ async def show_description_with_pagination(
 
     text = f"**ᴅᴇsᴄʀɪᴘᴛɪᴏɴ:**\n**Pᴀɢᴇ** `{current_page}`/`{total_chunks}`\n{description_chunks[current_page - 1]}"
     buttons = [
-        Button.inline("<<", data=f"pypi_description_page:{qid}:{current_page-1}"),
+        Button.inline("<<", data=f"pypi_description_page:{qid}:{current_page - 1}"),
         Button.inline("ʙᴀᴄᴋ", data=f"pypi_back_button:{qid}"),
-        Button.inline(">>", data=f"pypi_description_page:{qid}:{current_page+1}"),
+        Button.inline(">>", data=f"pypi_description_page:{qid}:{current_page + 1}"),
     ]
     await event.edit(text, buttons=buttons)
 
