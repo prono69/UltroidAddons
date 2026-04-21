@@ -23,9 +23,9 @@
 
 • `{i}aplm <search query>`
     __Search songs from Apple Music.__
-    
+
 • `{i}diz <search query>`
-    __Search songs from Deezer.__    
+    __Search songs from Deezer.__
 """
 
 import re
