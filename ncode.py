@@ -4,20 +4,23 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
- 
+
 """
 ✘ Commands Available -
- 
+
 • `{i}ncode <file>`
    Use - Paste the contents of file and send as pic.
 """
- 
-import os, pygments
+
+import os
+
+import pygments
 from pygments.formatters import ImageFormatter
 from pygments.lexers import Python3Lexer
-from . import ultroid_cmd, check_filename
- 
- 
+
+from . import check_filename, ultroid_cmd
+
+
 @ultroid_cmd(pattern="ncode$")
 async def coder_print(event):
     if not event.reply_to_msg_id:
@@ -35,7 +38,9 @@ async def coder_print(event):
     pygments.highlight(
         c,
         Python3Lexer(),
-        ImageFormatter(line_numbers=True, font_name="./resources/fonts/DroidSansMono.ttf"),
+        ImageFormatter(
+            line_numbers=True, font_name="./resources/fonts/DroidSansMono.ttf"
+        ),
         check_filename("result.png"),
     )
     res = await event.client.send_message(

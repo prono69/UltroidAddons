@@ -4,27 +4,27 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
- 
+
 """
 ✘ Commands Available -
- 
+
 • `{i}sticklet <text>`
    `create random sticker with text.`
 """
- 
+
 import io
 import os
 import random
 import textwrap
 from glob import glob
- 
+
 from PIL import Image, ImageDraw, ImageFont
 from telethon.errors.rpcerrorlist import BotMethodInvalidError
 from telethon.tl.types import InputMessagesFilterDocument
- 
+
 from . import *
- 
- 
+
+
 @ultroid_cmd(pattern="sticklet ?(.*)")
 async def sticklet(event):
     a = await event.eor(get_string("com_1"))
