@@ -113,7 +113,7 @@ async def insta_dl(event):
             await conv.send_message(link)
             # await conv.get_response()
             # await event.client.send_read_acknowledge(conv.chat_id)
-            media = await conv.get_response(timeout=10)
+            media = await conv.get_response(timeout=25)
             await event.client.send_read_acknowledge(conv.chat_id)
             if media.media:
                 while True:
