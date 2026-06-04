@@ -11,6 +11,7 @@ import os
 import time
 import aiohttp
 import aiofiles
+from urllib.parse import quote
 from . import ultroid_cmd
 
 
@@ -74,7 +75,7 @@ async def spotify_download(event):
         await status.edit(f"🔎 Searching Spotify for `{query}`...")
         try:
             async with aiohttp.ClientSession() as session:
-                async with session.get(f"{SEARCH_API}{query}&limit=1") as resp:
+                async with session.get(f"{SEARCH_API}{quote(query)}&limit=1") as resp:
                     if resp.status != 200:
                         raise Exception("Search API failed")
                     data = await resp.json()
