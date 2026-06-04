@@ -105,7 +105,7 @@ async def spotify_download(event):
         dl_info = data["data"]
 
     # --- Common download logic ---
-    download_url = dl_info.get("url")
+    download_url = dl_info.get("download")
     image_url = dl_info.get("image")
     author = dl_info.get("author", artist)
     spotify_link = song_url
