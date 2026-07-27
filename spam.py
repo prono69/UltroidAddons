@@ -4,29 +4,29 @@
 # This file is a part of < https://github.com/TeamUltroid/Ultroid/ >
 # PLease read the GNU Affero General Public License in
 # <https://www.github.com/TeamUltroid/Ultroid/blob/main/LICENSE/>.
- 
+
 """
 ✘ Commands Available -
 • `{i}spam <no of msgs> <your msg>`
   `{i}spam <no of msgs> <reply message>`
     spams chat, the current limit for this is from 1 to 99.
- 
+
 • `{i}bigspam <no of msgs> <your msg>`
   `{i}bigspam <no of msgs> <reply message>`
     Spams chat, the current limit is above 100.
- 
+
 • `{i}delayspam <delay time> <count> <msg>`
     Spam chat with delays..
- 
+
 • `{i}tspam <text>`
     Spam Chat with One-One Character..
 """
- 
+
 import asyncio
- 
+
 from . import *
- 
- 
+
+
 @ultroid_cmd(pattern="tspam")
 async def tmeme(e):
     tspam = str(e.text[7:])
@@ -34,8 +34,8 @@ async def tmeme(e):
     for letter in message:
         await e.respond(letter)
     await e.delete()
- 
- 
+
+
 @ultroid_cmd(pattern="spam")
 async def spammer(e):
     message = e.text
@@ -57,8 +57,8 @@ async def spammer(e):
     tasks = [asyncio.create_task(e.respond(spam_message)) for _ in range(counter)]
     await asyncio.wait(tasks)
     await e.delete()
- 
- 
+
+
 @ultroid_cmd(pattern="bigspam", fullsudo=True)
 async def bigspam(e):
     message = e.text
@@ -77,8 +77,8 @@ async def bigspam(e):
         return await eod(e, "`Use in Proper Format`")
     await asyncio.wait([e.respond(spam_message) for i in range(counter)])
     await e.delete()
- 
- 
+
+
 @ultroid_cmd(pattern="delayspam ?(.*)")
 async def delayspammer(e):
     try:
