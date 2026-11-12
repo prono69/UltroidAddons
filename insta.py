@@ -110,14 +110,18 @@ async def process_instagram_link(event, link, is_auto=False):
         await status.delete()
         reply_target = None if is_auto else event.reply_to_msg_id
 
-        # Unpack single items so Telegram renders full-height video/photo instead of a 1-item album
-        payload = media_list[0] if len(media_list) == 1 else media_list
+        # Extract underlying .media objects so Telethon preserves exact video dimensions (w x h)
+        if len(media_list) == 1:
+            payload = media_list[0].media
+        else:
+            payload = [m.media for m in media_list]
 
         await event.client.send_file(
             event.chat_id,
             payload,
             caption=f"__{link}__",
             reply_to=reply_target,
+            supports_streaming=True,
         )
 
         # In auto mode, remove your original bare link message so only the media remains
@@ -133,6 +137,7 @@ async def process_instagram_link(event, link, is_auto=False):
                     MEME_CHAT_ID,
                     payload,
                     caption=f"__{link}__",
+                    supports_streaming=True,
                 )
             except Exception:
                 pass
