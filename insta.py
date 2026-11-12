@@ -158,9 +158,13 @@ async def insta_dl(event):
     await process_instagram_link(event, match.group(1), is_auto=False)
 
 
-@ultroid_cmd(outgoing=True, chats=[MEME_CHAT_ID], func=lambda e: bool(e.text) and not e.media)
+@ultroid_cmd(
+    outgoing=True,
+    chats=[MEME_CHAT_ID],
+    func=lambda e: bool(e.text) and not (e.photo or e.video or e.document),
+)
 async def auto_meme_insta_dl(event):
-    """Auto-watcher: Download text-only Instagram links sent directly in MEME_CHAT_ID."""
+    """Auto-watcher: Download Instagram links sent directly in MEME_CHAT_ID."""
     text = event.text.strip()
 
     # Ignore if it's already an explicit .idl command (handled by insta_dl above)
