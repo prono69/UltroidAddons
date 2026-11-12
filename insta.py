@@ -13,7 +13,8 @@ from telethon.tl.functions.contacts import UnblockRequest
 
 from . import ultroid_cmd
 
-IG_REGEX = re.compile(r"(https?://(?:www\.)?instagram\.com/[^\s]+)")
+# Stops at whitespace OR '?' so tracking params (?cplk=, ?srtk=, ?igsh=, etc.) are stripped
+IG_REGEX = re.compile(r"(https?://(?:www\.)?instagram\.com/[^\s?]+)")
 MEME_CHAT_ID = -1002051913343
 
 
@@ -160,11 +161,15 @@ async def insta_dl(event):
 
 @ultroid_cmd(
     outgoing=True,
-    chats=[MEME_CHAT_ID],
-    func=lambda e: bool(e.text) and not (e.photo or e.video or e.document),
+    func=lambda e: e.chat_id == MEME_CHAT_ID
+    and bool(e.text)
+    and not (e.photo or e.video or e.document),
 )
 async def auto_meme_insta_dl(event):
     """Auto-watcher: Download Instagram links sent directly in MEME_CHAT_ID."""
+    if event.chat_id != MEME_CHAT_ID:
+        return
+
     text = event.text.strip()
 
     # Ignore if it's already an explicit .idl command (handled by insta_dl above)
