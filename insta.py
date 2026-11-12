@@ -110,9 +110,12 @@ async def process_instagram_link(event, link, is_auto=False):
         await status.delete()
         reply_target = None if is_auto else event.reply_to_msg_id
 
+        # Unpack single items so Telegram renders full-height video/photo instead of a 1-item album
+        payload = media_list[0] if len(media_list) == 1 else media_list
+
         await event.client.send_file(
             event.chat_id,
-            media_list,
+            payload,
             caption=f"__{link}__",
             reply_to=reply_target,
         )
@@ -128,7 +131,7 @@ async def process_instagram_link(event, link, is_auto=False):
             try:
                 await event.client.send_file(
                     MEME_CHAT_ID,
-                    media_list,
+                    payload,
                     caption=f"__{link}__",
                 )
             except Exception:
