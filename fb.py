@@ -7,10 +7,12 @@ Auto-downloads bare Facebook links sent in MEME_CHAT_ID.
 
 import asyncio
 import re
+import time
 from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 
 from telethon.errors.rpcerrorlist import YouBlockedUserError
 from telethon.tl.functions.contacts import UnblockRequest
+from telethon.tl.types import MessageMediaWebPage
 
 from . import ultroid_cmd
 
@@ -29,14 +31,23 @@ def clean_fb_url(raw_url):
 
 
 def has_downloadable_media(msg):
-    """Check if a message contains an actual video, photo, or document."""
-    return bool(msg and msg.media and (msg.video or msg.photo or msg.document))
+    """Check if a message contains an actual video, photo, or document (ignoring link previews)."""
+    if not msg or not msg.media or isinstance(msg.media, MessageMediaWebPage):
+        return False
+    return bool(msg.video or msg.photo or msg.document)
 
 
-async def fetch_from_bot(client, bot_username, link, initial_timeout=20, album_timeout=3):
+def is_text_or_link_preview(msg):
+    """Allow text-only messages AND messages with URL link previews, but ignore uploaded files."""
+    if not msg or not msg.text:
+        return False
+    return not msg.media or isinstance(msg.media, MessageMediaWebPage)
+
+
+async def fetch_from_bot(client, bot_username, link, initial_timeout=25, album_timeout=3):
     """
     Sends a Facebook link to a downloader bot and collects returned media,
-    supporting both direct media replies and edited 'Downloading...' placeholders.
+    reliably polling edited 'Downloading...' placeholders until media appears.
     """
     media_list = []
     error_text = None
@@ -49,25 +60,46 @@ async def fetch_from_bot(client, bot_username, link, initial_timeout=20, album_t
                 await client(UnblockRequest(bot_username))
                 await conv.send_message(link)
 
-            first_resp = await conv.get_response(timeout=initial_timeout)
+            first_resp = await conv.get_response(timeout=12)
             await client.send_read_acknowledge(conv.chat_id)
 
             # Case 1: Bot sent media directly
             if has_downloadable_media(first_resp):
                 media_list.append(first_resp)
 
-            # Case 2: Bot sent a 'Downloading...' text placeholder and edits it into media
+            # Case 2: Bot sent a placeholder ("Downloading...") and edits it into media
             else:
-                try:
-                    edited_resp = await conv.get_edit(timeout=initial_timeout)
-                    await client.send_read_acknowledge(conv.chat_id)
-                    if has_downloadable_media(edited_resp):
-                        media_list.append(edited_resp)
-                    else:
-                        error_text = edited_resp.text or first_resp.text or "Bot returned no media."
-                except asyncio.TimeoutError:
-                    # If never edited, first_resp.text was likely an error message
-                    error_text = first_resp.text or f"Timed out after {initial_timeout}s."
+                initial_text = (first_resp.text or "").lower()
+                deadline = time.monotonic() + initial_timeout
+                current_msg = first_resp
+
+                while time.monotonic() < deadline:
+                    await asyncio.sleep(1.5)
+                    current_msg = await client.get_messages(bot_username, ids=first_resp.id)
+                    if not current_msg:
+                        break
+
+                    if has_downloadable_media(current_msg):
+                        await client.send_read_acknowledge(conv.chat_id)
+                        media_list.append(current_msg)
+                        break
+
+                    # If the text changed to something that is NOT a progress status, stop early
+                    new_text = (current_msg.text or "").lower()
+                    if new_text and new_text != initial_text:
+                        if not any(
+                            word in new_text
+                            for word in ("download", "upload", "process", "wait", "fetch", "loading")
+                        ):
+                            error_text = current_msg.text
+                            break
+
+                if not media_list and not error_text:
+                    error_text = (
+                        current_msg.text
+                        if current_msg and current_msg.text
+                        else f"Timed out after {initial_timeout}s."
+                    )
 
             # Gather any additional media messages if the post has multiple items
             if media_list:
@@ -81,7 +113,7 @@ async def fetch_from_bot(client, bot_username, link, initial_timeout=20, album_t
                         break
 
         except asyncio.TimeoutError:
-            error_text = f"Timed out after {initial_timeout}s."
+            error_text = "Bot did not respond."
 
     return media_list, error_text
 
@@ -97,7 +129,7 @@ async def process_facebook_link(event, link, is_auto=False):
 
     # Attempt 1: @coboldbot (edits 'Downloading...' message into media)
     media_list, v1_err = await fetch_from_bot(
-        event.client, "coboldbot", link, initial_timeout=20, album_timeout=3
+        event.client, "coboldbot", link, initial_timeout=25, album_timeout=3
     )
 
     # Attempt 2: Fallback to @go_vdbot
@@ -105,7 +137,7 @@ async def process_facebook_link(event, link, is_auto=False):
     if not media_list:
         await status.edit("__v1 failed, switching to v2...__")
         media_list, v2_err = await fetch_from_bot(
-            event.client, "go_vdbot", link, initial_timeout=18, album_timeout=3
+            event.client, "go_vdbot", link, initial_timeout=20, album_timeout=3
         )
 
     if media_list:
@@ -171,9 +203,7 @@ async def fb_dl(event):
 
 @ultroid_cmd(
     outgoing=True,
-    func=lambda e: e.chat_id == MEME_CHAT_ID
-    and bool(e.text)
-    and not (e.photo or e.video or e.document),
+    func=lambda e: e.chat_id == MEME_CHAT_ID and is_text_or_link_preview(e),
 )
 async def auto_meme_fb_dl(event):
     """Auto-watcher: Download Facebook links sent directly in MEME_CHAT_ID."""
