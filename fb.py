@@ -28,10 +28,15 @@ def clean_fb_url(raw_url):
     return urlunparse(parsed._replace(query=urlencode(clean_query, doseq=True)))
 
 
-async def fetch_from_bot(client, bot_username, link, initial_timeout=18, album_timeout=3):
+def has_downloadable_media(msg):
+    """Check if a message contains an actual video, photo, or document."""
+    return bool(msg and msg.media and (msg.video or msg.photo or msg.document))
+
+
+async def fetch_from_bot(client, bot_username, link, initial_timeout=20, album_timeout=3):
     """
-    Sends a Facebook link directly to a downloader bot and collects all returned media.
-    Returns (media_list, error_text).
+    Sends a Facebook link to a downloader bot and collects returned media,
+    supporting both direct media replies and edited 'Downloading...' placeholders.
     """
     media_list = []
     error_text = None
@@ -47,24 +52,33 @@ async def fetch_from_bot(client, bot_username, link, initial_timeout=18, album_t
             first_resp = await conv.get_response(timeout=initial_timeout)
             await client.send_read_acknowledge(conv.chat_id)
 
-            if first_resp.media and (
-                first_resp.video or first_resp.photo or first_resp.document
-            ):
+            # Case 1: Bot sent media directly
+            if has_downloadable_media(first_resp):
                 media_list.append(first_resp)
 
-                # Gather remaining items if post has multiple attachments
+            # Case 2: Bot sent a 'Downloading...' text placeholder and edits it into media
+            else:
+                try:
+                    edited_resp = await conv.get_edit(timeout=initial_timeout)
+                    await client.send_read_acknowledge(conv.chat_id)
+                    if has_downloadable_media(edited_resp):
+                        media_list.append(edited_resp)
+                    else:
+                        error_text = edited_resp.text or first_resp.text or "Bot returned no media."
+                except asyncio.TimeoutError:
+                    # If never edited, first_resp.text was likely an error message
+                    error_text = first_resp.text or f"Timed out after {initial_timeout}s."
+
+            # Gather any additional media messages if the post has multiple items
+            if media_list:
                 while True:
                     try:
                         next_resp = await conv.get_response(timeout=album_timeout)
                         await client.send_read_acknowledge(conv.chat_id)
-                        if next_resp.media and (
-                            next_resp.video or next_resp.photo or next_resp.document
-                        ):
+                        if has_downloadable_media(next_resp):
                             media_list.append(next_resp)
                     except asyncio.TimeoutError:
                         break
-            else:
-                error_text = first_resp.text or "Bot returned no media."
 
         except asyncio.TimeoutError:
             error_text = f"Timed out after {initial_timeout}s."
@@ -81,7 +95,7 @@ async def process_facebook_link(event, link, is_auto=False):
         else await event.eor("__Fetching Facebook media from v1...__")
     )
 
-    # Attempt 1: @coboldbot
+    # Attempt 1: @coboldbot (edits 'Downloading...' message into media)
     media_list, v1_err = await fetch_from_bot(
         event.client, "coboldbot", link, initial_timeout=20, album_timeout=3
     )
